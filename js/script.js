@@ -338,19 +338,6 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	};
 	
 	/**
-	 * Set track rating.<br>
-	 * Result : {}
-	 * @param {function(result,params,method)} successCallback
-	 * @param {function(error,params,method)} errorCallback
-	 * @param {int} playlist_id
-	 * @param {int} track_id
-	 * @param {int} rating 0,1..5 0 is not set
-	 */
-	wrk.setRating = function(successCallback, errorCallback, playlist_id, track_id, rating){
-		call("SetTrackRating",{playlist_id:playlist_id, track_id:track_id, rating:rating}, successCallback, errorCallback);
-	};
-	
-	/**
 	 * Returns list of playlists.
 	 * Result : [{id:(int),title:(string),duration:(int)ms,entries_count:(int),size_of_entries:(int)bytes,crc32:(int)},] depends on asked fields
 	 * @param {function(result,params,method)} successCallback
@@ -552,6 +539,26 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 			r1 = false;
 		}, errorCallback, lpfields, start, count, search);
 	};
+		
+	/**
+	 * Returns URI of album cover.
+	 * Result : {album_cover_uri:(string)}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(error,params,method)} errorCallback
+	 * @param {int} playlist_id
+	 * @param {int} track_id
+	 * @param {int} width [opt]
+	 * @param {int} height [opt]
+	 */
+	wrk.cover = function(successCallback, errorCallback, playlist_id, track_id, width, height){
+		var params = {playlist_id:playlist_id, track_id:track_id};
+		if(typeof width !== "undefined") params.cover_width = width;
+		if(typeof height !== "undefined") params.cover_height = height;
+		call("GetCover", params, function(r,p,m){
+			r.album_cover_uri = url+"/"+r.album_cover_uri;
+			successCallback(r,p,m);		
+		}, errorCallback);
+	};
 	
 	/**
 	 * Player switched to playing/paused/stopped state or changed track.
@@ -593,25 +600,38 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	wrk.subscribe.playlists = function(successCallback, errorCallback){
 		call("SubscribeOnAIMPStateUpdateEvent",{event:"playlists_content_change"}, successCallback, errorCallback);
 	};
-		
+	
 	/**
-	 * Returns URI of album cover.
-	 * Result : {album_cover_uri:(string)}
+	 * Set track rating.<br>
+	 * Result : {}
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
 	 * @param {int} playlist_id
 	 * @param {int} track_id
-	 * @param {int} width [opt]
-	 * @param {int} height [opt]
+	 * @param {int} rating 0,1..5 0 is not set
 	 */
-	wrk.cover = function(successCallback, errorCallback, playlist_id, track_id, width, height){
-		var params = {playlist_id:playlist_id, track_id:track_id};
-		if(typeof width !== "undefined") params.cover_width = width;
-		if(typeof height !== "undefined") params.cover_height = height;
-		call("GetCover", params, function(r,p,m){
-			r.album_cover_uri = url+"/"+r.album_cover_uri;
-			successCallback(r,p,m);		
-		}, errorCallback);
+	wrk.setRating = function(successCallback, errorCallback, playlist_id, track_id, rating){
+		call("SetTrackRating",{playlist_id:playlist_id, track_id:track_id, rating:rating}, successCallback, errorCallback);
+	};
+	
+	/**
+	 * Returns versions of plugin and AIMP player.<br>
+	 * Result : {aimp_version:(string),plugin_version:(string)}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(error,params,method)} errorCallback
+	 */	
+	wrk.version = function(successCallback, errorCallback){
+		call("Version", successCallback, errorCallback);
+	};
+	
+	/**
+	 * Returns plugin capabilities.<br>
+	 * Result : {physical_track_deletion:(bool),scheduler:(bool),upload_track:(bool)}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(error,params,method)} errorCallback
+	 */
+	wrk.pluginCapabilities = function(successCallback, errorCallback){
+		call("PluginCapabilities", successCallback, errorCallback);		
 	};
 	
 	var position = {auto:false, listeners:[], tickInterval:200, checkInterval:30000, speed:1, lastTicker:-1, lastUpdater:-1, lastUpdate:-1, lastPos:0, state:"playing",
@@ -663,7 +683,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 		position.state=state;
 		wrk.position.forceUpdate();
 	};
-	
+		
 	/**
 	 * Get track download URL.
 	 * @param {int} playlist_id
@@ -892,13 +912,13 @@ function Ihm(ctrl, configTables){
 			queue.entries.forEach(function(v,k){
 				var t = $("<div>").addClass("track").appendTo("#main");
 				$("<div>").addClass("no").text((k+1)+".").appendTo(t);
-				$("<div>").addClass("title").text(v[1]).attr("title",v[1]).appendTo(t).click(function(){showPlaylist(v[5],v[0]);});
-				$("<div>").addClass("control").text("remove").attr("title","remove from queue").appendTo(t).click(function(){ctrl.unqueue(v[5],v[0]);});
+				$("<div>").addClass("title").text(v.title).attr("title",v.title).appendTo(t).click(function(){showPlaylist(v.playlist_id, v.id);});
+				$("<div>").addClass("control").text("remove").attr("title","remove from queue").appendTo(t).click(function(){ctrl.unqueue(v.playlist_id, v.id);});
 				$("<div>").addClass("control").text("up").attr("title","move up").appendTo(t).click(function(){if(k!==0)ctrl.queuemove(k, k-1);});
 				//$("<div>").addClass("control").text("down").attr("title","move down").appendTo(t).click(function(){if(k!==queue.entries.length-1)ctrl.queuemove(k, k+1);});
-				$("<div>").addClass("album").text(v[3]).attr("title",v[3]).appendTo(t);
-				$("<div>").addClass("artist").text(v[2]).attr("title",v[2]).appendTo(t);
-				$("<div>").addClass("duration").text(time(v[4])).appendTo(t);
+				$("<div>").addClass("album").text(v.album).attr("title",v.album).appendTo(t);
+				$("<div>").addClass("artist").text(v.artist).attr("title",v.artist).appendTo(t);
+				$("<div>").addClass("duration").text(time(v.duration)).appendTo(t);
 			});
 			$("<p>").appendTo("#main").text(" ");
 			$("<p>").appendTo("#main").text(" ");
@@ -1180,9 +1200,9 @@ function Ihm(ctrl, configTables){
 		queue.map = {};
 		if(tab===1)$("#main .track").removeClass("queued");
 		o.entries.forEach(function(t){
-			if(!queue.map[t[5]]) queue.map[t[5]]={};
-			queue.map[t[5]][t[0]] = true;
-			if(tab===1 && tabpls===t[5])$("#main .track[data-id="+t[0]+"]").addClass("queued");
+			if(!queue.map[t.playlist_id]) queue.map[t.playlist_id]={};
+			queue.map[t.playlist_id][t.id] = true;
+			if(tab===1 && tabpls===t.playlist_id)$("#main .track[data-id="+t.id+"]").addClass("queued");
 		});
 		if(tab===2) showQueue();
 	};
@@ -1577,7 +1597,8 @@ function Ctrl(){
 	var itfIhm = {}, public = {};
 	
 	var TRACK_FIELDS = ["channels", "path", "extension", "filename", "arating", "folder", "creationdate", "creationtime", "disc", "track", "modificationdate", "modificationtime", "samplerate"],
-		PLAYLIST_FIELDS = ["id", "title", "artist", "album", "duration", "track", "disc", "path", "rating", "arating", "folder", "channels", "filename", "extension", "bitrate", "channels", "samplerate"];
+		PLAYLIST_FIELDS = ["id", "title", "artist", "album", "duration", "track", "disc", "path", "rating", "arating", "folder", "channels", "filename", "extension", "bitrate", "channels", "samplerate"],
+		QUEUE_FIELDS = ["id","title","artist","album","duration","playlist_id"];
 	
 	var wrk = Wrk("",function(r){console.log(r);},function(f){console.log(f);return true;});
 	var ihm = Ihm(itfIhm, configTables);
@@ -1606,7 +1627,7 @@ function Ctrl(){
 		itfIhm.loadCover();
 		wrk.position.subscribe(ihm.updatePos);
 		wrk.position.forceUpdate();
-		wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);
+		wrk.loadQueueMapped(ihm.loadQueue,null,QUEUE_FIELDS);
 		wrk.subscribe.controlPanelState(controlPanelEvent);
 		wrk.subscribe.track(trackEvent);
 		wrk.subscribe.playlists(playlistEvent);
@@ -1617,19 +1638,23 @@ function Ctrl(){
 		ihm.updateState(r);
 		itfIhm.loadCurrTrack();
 		wrk.position.setState(r.playback_state);
-		wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);		
+		reloadQueue();
 	}
 	function trackEvent(r){
 		wrk.subscribe.track(trackEvent);
 		itfIhm.loadCurrTrack();
 		wrk.position.forceUpdate();
-		wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);
+		reloadQueue();
 	}
 	function playlistEvent(){
 		wrk.subscribe.playlists(playlistEvent);
 		itfIhm.loadCurrTrack();
 		wrk.playlists(ihm.updatePlaylists,null,["id","title","crc32"]);
-		wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);
+		reloadQueue();
+	}
+	
+	function reloadQueue(){
+		wrk.loadQueueMapped(ihm.loadQueue,null,QUEUE_FIELDS);
 	}
 	
 	public.play = itfIhm.play = function(playlist_id, track_id){
@@ -1662,13 +1687,13 @@ function Ctrl(){
 	};
 	
 	public.queue = itfIhm.queue = function(playlist_id, track_id){
-		wrk.queue(function(){wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);}, null,playlist_id, track_id);
+		wrk.queue(reloadQueue, null, playlist_id, track_id);
 	};
 	public.unqueue = itfIhm.unqueue = function(playlist_id, track_id){
-		wrk.unqueue(function(){wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);}, null,playlist_id, track_id);
+		wrk.unqueue(reloadQueue, null, playlist_id, track_id);
 	};
 	public.queuemove = itfIhm.queuemove = function(oldpos, newpos){
-		wrk.queueMove(function(){wrk.loadQueue(ihm.loadQueue,null,["id","title","artist","album","duration","playlist_id"]);}, null, oldpos, newpos);
+		wrk.queueMove(reloadQueue, null, oldpos, newpos);
 	};
 	
 	itfIhm.setRating = function(p,t,r){
