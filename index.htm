@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html><head>
+		<title>AimpWeb</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="js/lib/rpc.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-plugins.min.js"></script>
+		<script type="text/javascript" src="js/lib/underscore.min.js"></script>
+		<script type="text/javascript" src="js/lib/rlib.min.js"></script>
+		<script type="text/javascript" src="js/script.js"></script>
+		<script type="text/javascript">document.write('<script type="text/javascript" src="js/i18n/' + (localStorage.getItem('lang') || 'en') + '.js"><\/script>')</script>
+		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+	</head><body>
+		<header>
+			<div id="songblock">
+				<div id="cover">song</div>
+				<div id="title"></div>
+				<div id="infos1"></div>
+				<div id="infos2"></div>
+			</div>
+			<div id="controls">
+				<div id="controlbuttons" class="volume">
+					<div id="bprev">previous</div>
+					<div id="bstop">stop</div>
+					<div id="bpause">pause</div>
+					<div id="bplay">play</div>
+					<div id="bnext">next</div>
+					<div id="bshuffle">shuffle</div>
+					<div id="brepeat">repeat</div>
+					<div id="volumebar"></div>
+					<div id="volume">50%</div>
+					<div id="bvolume">volume</div>
+				</div>
+				<div id="timebarblock">
+					<div id="timebar"></div>
+					<div id="time">-:--</div>
+				</div>
+			</div>
+		</header>
+		<nav>
+			<h1>AimpWeb</h1>
+			<a data-lnk="queue">Queue</a>
+			<h2 data-h="playlists">Playlists</h2>
+			<div id="playlists"></div>
+			<h2 data-h="settings">Settings</h2>
+			<a data-lnk="settings">Settings</a>
+			<a data-lnk="equalizer">Equalizer</a>
+			<a data-lnk="credits">Credits</a>
+		</nav>
+		<section id="main">
+			<h1>To do</h1>
+			<ul>
+				<li>Implement search</li>
+				<li>Implement not shuffled workaround</li>
+				<li>Handle disconnection</li>
+				<li>Implement lyrics ?</li>
+			</ul>
+		</section>
+		<div id="fixedPanel">
+			<div id="fbmenu">menu</div>
+			<div class="spacer"> </div>
+			<div id="fbprev">previous</div>
+			<div id="fbup">song</div>
+			<div id="fbpause">pause</div>
+			<div id="fbplay">play</div>
+			<div id="fbnext">next</div>
+			<div class="spacer"> </div>
+			<div id="fbsearch">search</div>
+		</div>
+	</body>
+</html>

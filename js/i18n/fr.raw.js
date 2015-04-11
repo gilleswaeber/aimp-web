@@ -1,0 +1,117 @@
+// FRENCH Translation
+raw =
+{
+	controls:{
+		play:"Lecture",
+		pause:"Pause",
+		stop:"Stop",
+		prev:"Piste précédente",
+		next:"Piste suivante",
+		shuffle:"Mélanger",
+		repeat:"Répéter la piste",
+		volume:"Volume",
+		mute:"Muet",
+		position:"Position",
+	},
+	nav:{
+		playlists:"Listes de lecture",
+		queue:"File d'attente",
+		settings:"Configuration",
+		equalizer:"Égaliseur",
+		credits:"Crédits",
+		help:"Aide",
+	},
+	playlists:{
+		title:"Titre",
+		artist:"Artiste",
+		album:"Album",
+		duration:"Durée",
+		track:"Numéro de piste",
+		path:"Chemin",
+		folder:"Dossier parent",
+		rating:"Évaluation",
+		queueAdd:"Ajouter à la file d'attente",
+		moveDown:"Descendre",
+		moveUp:"Monter",
+		queueEmpty:"La file d'attente est vide !",
+		sortBy:"Trier par : ",
+		groupBy:"Grouper par : ",
+	},
+	settings:{
+		h:"Configuration",
+		
+		lang:"Langues",
+		langT:"Voici les différentes langues disponibles.",
+		completion:"{p}% traduit",
+		
+		skins:"Personnalisation",
+		skinsT:"Voici les différents thèmes disponibles.",
+		
+		reloadT:"Si vous modifiez ce paramètre, l'application sera rechargée.",
+		saveT:"Les paramètres sont enregistrés automatiquement.",
+		
+		notifications:"Notifications",
+		notificationsT:"Une notification est affichée à chaque changement de piste.",
+		
+		notSupported:"Cette fonctionnalité n'est pas compatible avec votre navigateur. ",
+		
+		misc:"Divers",
+		followTrack:"Quand la liste de lecture actuelle est ouverte, suivre la piste actuelle.",
+		globalSort:"Utiliser les mêmes paramètres de tri et de groupement pour toutes les listes de lecture.",
+		downloadButton:"Afficher le bouton de téléchargement dans les listes de lecture.",
+	},
+	equalizer:{
+		h:"Égaliseur",
+		refreshT:"Ces paramètres ne peuvent pas être rafraîchis dynamiquement.",
+		refresh:"Rafraîchir",
+		
+		fx:"Effets",
+		balance:"Balance",
+		speed:"Vitesse",
+		reverb:"Reverb",
+		echo:"Écho",
+		chorus:"Chorus",
+		flanger:"Flanger",
+		left:"Gauche",
+		right:"Droite",
+		center:"Centre",
+		
+		presets:"Préréglages",
+		
+		pdef:"Réinitialiser",
+		pballad:"Ballade",
+		pclassic:"Classique",
+		pclub:"Club",
+		pdance:"Dance",
+		pfullBass:"Basses",
+		pfullBassTreble:"Basses & Aigus",
+		pfullTreble:"Aigus",
+		pheavyMetal:"Heavy Metal",
+		pjazz:"Jazz",
+		plive:"Live",
+		pparty:"Party",
+		ppop:"Pop",
+		prap:"Rap",
+		prock:"Rock",
+		psoft:"Soft",
+		psoftRock:"Soft Rock",
+		pvocal:"Voix",
+		psinus:"Onde",
+	},
+	credits:{
+		h:"Crédits",
+		dev:"Conçu et développé par {dev}",
+		ressources:"Ressources",
+		appUsing:"Cette application utilise {what} par {who}.",
+		aimp:"Cette application requiert le lecteur AIMP et le plugin AIMP Control.",
+		translations:"Traductions",
+	},
+	generic:{
+		loading:"Chargement...",
+		enabled:"Activé",
+		disabled:"Désactivé",
+		blocked:"Indisponible",
+		fullscreen:"Plein écran",
+		
+	}
+}
