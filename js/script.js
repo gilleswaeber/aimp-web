@@ -3,6 +3,7 @@
 /* global _ */
 /* global RLib */
 /* global rpc */
+/* global toolkit */
 
 var DEBUG = {};
 
@@ -649,11 +650,7 @@ function Ihm(ctrl, configTables){
 		$('nav a[data-lnk="settings"]').click(showSettings).text(i18n.nav.settings);
 		$('nav a[data-lnk="equalizer"]').click(showEqualizer).text(i18n.nav.equalizer);
 		$('nav a[data-lnk="credits"]').click(showCredits).text(i18n.nav.credits);
-		$('nav a[data-lnk="fullscreen"]').click(function(){
-			var f = (document.body.requestFullscreen ? "requestFullscreen" : document.body.mozRequestFullScreen ? "mozRequestFullScreen" : document.body.webkitRequestFullScreen ? "webkitRequestFullScreen" : false);
-			if(document.body === false) alert(i18n.settings.notSupported());
-			else document.body[f]();
-		}).text(i18n.generic.fullscreen);
+		$('nav a[data-lnk="fullscreen"]').click(toolkit.toggleFullScreen).text(i18n.generic.fullscreen);
 		$("#title").click(function(){
 			if(tabpls !== ctrack.pls || tab !== 1) showPlaylist(ctrack.pls, ctrack.id);
 			else {
@@ -1366,10 +1363,9 @@ function Ihm(ctrl, configTables){
 		});
 		if(equalizers.group.enabled) enBtn.addClass("active");
 		$("<button>").appendTo(m).text(i18n.generic.fullscreen).click(function(){
-			var k = equalizers.group.e.get(0);
-			var f = (k.requestFullscreen ? "requestFullscreen" : k.mozRequestFullScreen ? "mozRequestFullScreen" : k.webkitRequestFullScreen ? "webkitRequestFullScreen" : false);
-			if(k === false) alert(i18n.settings.notSupported());
-			else k[f]();
+			toolkit.toggleFullScreen(equalizers.group.e.get(0), function(){
+				alert(i18n.settings.notSupported());
+			});
 		});
 		equalizers.group.e.appendTo(m);
 		equalizers.group.s.update();
