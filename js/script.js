@@ -649,6 +649,11 @@ function Ihm(ctrl, configTables){
 		$('nav a[data-lnk="settings"]').click(showSettings).text(i18n.nav.settings);
 		$('nav a[data-lnk="equalizer"]').click(showEqualizer).text(i18n.nav.equalizer);
 		$('nav a[data-lnk="credits"]').click(showCredits).text(i18n.nav.credits);
+		$('nav a[data-lnk="fullscreen"]').click(function(){
+			var f = (document.body.requestFullscreen ? "requestFullscreen" : document.body.mozRequestFullScreen ? "mozRequestFullScreen" : document.body.webkitRequestFullScreen ? "webkitRequestFullScreen" : false);
+			if(document.body === false) alert(i18n.settings.notSupported());
+			else document.body[f]();
+		}).text(i18n.generic.fullscreen);
 		$("#title").click(function(){
 			if(tabpls !== ctrack.pls || tab !== 1) showPlaylist(ctrack.pls, ctrack.id);
 			else {
