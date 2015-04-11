@@ -1,0 +1,741 @@
+
+
+@font-face{
+	font-family: icons;
+	src:url('fonts/icons/icomoon.eot');
+	src:url('fonts/icons/icomoon.eot?#iefixn9k6jm') format('embedded-opentype'),
+		url('fonts/icons/icomoon.woff') format('woff'),
+		url('fonts/icons/icomoon.ttf') format('truetype'),
+		url('fonts/icons/icomoon.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+html, body{
+	font-size:10px;
+}
+
+body{
+	padding:0;
+	margin:0;
+	height:100vh;
+	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	overflow-y:scroll;
+	min-width: 320px;
+	color:#000;
+	background:#FFF;
+}
+
+*, #main canvas{
+	cursor: default;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#title, #infos1, #infos2, .title, .artist, .album, .duration, nav a, #main, #main *{
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;	
+}
+
+a:link, a:visited{
+	color:#484;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+header{
+	position: fixed;
+	top:0;
+	left:0;
+	right:0;
+	height:100px;
+	border-bottom: solid 3px #000;
+	z-index:200;
+	background: #FFF;
+}
+
+#songblock{
+	position: absolute;
+	height:100px;
+	right:350px;
+	left:0;
+	background:#EEE;
+	padding: 10px 10px 10px 100px;
+	box-sizing: border-box;
+}
+
+#songblock div{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#cover{
+	position: absolute;
+	top:10px;
+	left:10px;
+	height:40px;
+	width:40px;
+	padding: 20px;
+	background-size:100%;
+	font-family: icons;
+	font-size: 40px;
+	text-align: center;
+	color: transparent;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+}
+#cover.nocover{
+	color: #484;	
+}
+
+#title{
+	font-size: 28px;
+	font-weight: 200;
+	cursor: pointer;
+}
+
+#infos1{
+	font-weight: 600;
+	font-size:14px;
+}
+
+#infos2{
+	font-size:14px;
+}
+
+#title:after, #infos1:after, #infos2:after{
+	content: " ";
+}
+
+#infos2 span{
+	display: inline-block;
+	font-size:12px;
+	padding:1px 0;
+	margin-right: 7px;
+	vertical-align: bottom;
+	margin-top: 2px;
+}
+
+#infos2 .rating{
+	padding: 3px 0 2px;
+}
+
+#controls{
+	position: absolute;
+	right:0;
+	width:350px;
+	height:100px;
+	padding:10px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+#controlbuttons{
+	padding:5px 0;
+	height:35px;
+}
+
+#controlbuttons > div{
+	font-family: icons;
+	display:inline-block;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	font-size: 20px;
+	padding:0 6px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+#controlbuttons div.active{
+	color: #484;
+}
+
+#controlbuttons #bplay{
+	font-size: 30px;
+}
+
+#timebar, #controlbuttons #volumebar, .eqSlider{
+	width: 250px;
+	position: relative;
+	background:#EEE;
+	height: 10px;
+	display:inline-block;
+	vertical-align: 0;
+	overflow: hidden;
+	padding:0;
+	cursor: default;
+}
+
+#controlbuttons #volumebar{
+	width: 200px;
+}
+#controlbuttons #volumebar, #controlbuttons #volume, #controlbuttons.volume #bprev, #controlbuttons.volume #bstop, #controlbuttons.volume #bpause, #controlbuttons.volume #bplay, #controlbuttons.volume #bnext, #controlbuttons.volume #bshuffle, #controlbuttons.volume #brepeat {
+	display: none;
+}
+#controlbuttons.volume #volumebar, #controlbuttons.volume #volume{
+	display: inline-block;
+}
+#controlbuttons.volume{
+	padding:10px 0 0;
+}
+#controlbuttons #volume{
+	cursor: default;
+	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	margin-left: 5px;
+	font-size: 16px;
+	min-width: 35px;
+}
+#controlbuttons.volume div{
+	vertical-align: 0;
+}
+
+.eqSliderBox{
+	display:inline-block;
+	width:300px;
+	min-width:30%;
+	margin: 0 20px 20px 10px;
+}
+.eqSliderBox .eqSlider{
+	display: block;
+	width:100%;
+}
+.eqSliderBox .name, .eqSliderBox .value{
+	display: inline-block;
+	width:50%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.eqSliderBox .name{
+	font-weight: 600;
+}
+.eqSliderBox .value{
+	text-align: right;
+}
+
+.eqMSlider{
+	position: relative;
+	height: 400px;
+	max-width: 900px;
+	background:#EEE;
+	margin:10px 30px 10px 10px;
+	max-height: 80vh;
+}
+
+#time{
+	display:inline-block;
+	margin-left: 5px;
+	font-size: 16px;
+}
+
+nav{
+	position:fixed;
+	top:103px;
+	left:0;
+	bottom:0;
+	padding: 10px;
+	width: 200px;
+	border-right: solid 3px #000;
+	overflow-x: hidden;
+	z-index:200;
+	background: #FFF;
+}
+
+nav h1{
+	font-size:36px;
+	font-weight: 200;
+	margin:0;
+}
+
+nav h2{
+	font-size: 20px;
+	font-weight: 600;
+	margin: 10px 0 0;
+}
+
+nav a{
+	display: block;
+	font-size: 18px;
+	margin: 0 -10px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+nav a.active{
+	background: #484;
+	color:#FFF;
+	font-weight: 600;
+}
+
+nav a.playing{
+	border-right: solid 3px #484;
+}
+
+nav a.active.playing{
+	border-color: #FFF;
+}
+
+#main{
+	min-height: 100vh;
+	box-sizing: border-box;
+	padding: 0 0 0 223px;
+	font-size: 16px;
+}
+
+#main h1{
+	font-size:28px;
+	font-weight: 400;
+	margin:0 0 0 10px;
+	padding-top: 113px;
+}
+
+#main h2{
+	font-size:20px;
+	font-weight: 600;
+	margin:10px 0 0 10px;
+	background: #FFF;
+}
+
+#main .group h2{
+	position: -webkit-sticky;
+	position: sticky;
+	top:100px;
+	z-index:10;
+	margin-top: 5px;
+	padding-top: 5px;
+	margin-left: 0;
+	padding-left: 10px;
+	border-bottom: solid 3px #EEE;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#main p{
+	margin:0 0 5px 10px;
+}
+
+#main .message{
+	padding:0 10px;
+}
+
+#main .message.fill{
+	min-height:50vh;
+}
+
+.groups{
+	margin: 0 10px 0 10px;
+	font-weight: 600;
+}
+.sorts{
+	margin: 0 10px 10px 10px;	
+	font-weight: 600;
+}
+
+.groups > span, .sorts > span{
+	margin-right: 5px;
+	font-weight: normal;
+}
+
+.groups .active, .sorts .active{
+	font-weight: 700;
+	color: #484;
+}
+
+.sorts .active span:not(.remove){
+	color: #484;
+	margin:0 3px 0 0;
+}
+
+.groups .remove, .sorts .remove{
+	font-family: icons;
+	display: inline-block;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	font-weight: normal;
+}
+
+.group h2{
+	cursor: pointer;
+}
+
+.group h2:before{
+	content: "minus";
+	font-family: icons;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	margin-right: 5px;
+	font-weight: normal;
+}
+
+.group.folded .track{
+	height:0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.group.folded h2:before{
+	content: "plus";
+}
+
+.track{
+	display: flex;
+	padding: 2px 0;
+}
+
+.track > *{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	position: relative;
+	margin-right:5px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+.track .no{
+	width:40px;
+	text-align:right;
+}
+
+.track .title{
+	cursor: pointer;
+}
+
+.track .control{
+	cursor: pointer;
+	font-family: icons;
+	margin-right: 20px;
+	font-weight: normal;
+	font-size:20px;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+}
+
+.track .title, .track .artist, .track .album{
+	width: 300px;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.track .duration{
+	width:60px;
+	text-align:right;	
+}
+
+.track .rating{
+	width:100px;
+	text-align:right;	
+}
+
+.track.active{
+	font-weight: 900;
+}
+
+.track.queued .control.queue{
+	color:#484;
+}
+
+.langs > div{
+	margin:0 10px;
+	position: relative;
+}
+
+.langs > div > div{
+	width:32%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.langs > div.active{
+	font-weight: 900;
+}
+
+.skins{
+	margin: 0 10px;
+}
+
+.skins > div{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	line-height: 0;
+	margin: 0 10px 10px 0;
+	position: relative;
+	border: solid 3px #000;
+	padding: 3px;
+	cursor: pointer;
+}
+
+.skins > div.active{
+	border-color: #484;
+}
+
+.skins > div > div{
+	display:inline-block;
+	width:50%;
+	height:50%;
+	cursor: pointer;
+}
+
+.checkbox{
+	margin:0 10px;
+	display: inline-block;
+	position: relative;
+	background: #EEE;
+	padding:3px 8px;
+	cursor: pointer;
+	font-size: 14px;
+	min-width: 80px;
+}
+.checkbox:before{
+	content:"no";
+	font-family: icons;
+	margin-right:5px;
+	display: inline-block;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+}
+.checkbox.active{
+	background: #484;
+	font-weight: bold;
+	color: #FFF;
+}
+.checkbox.active:before{
+	content:"yes";
+}
+.checkbox.blocked:before{
+	content:"unavailable";
+}
+
+#main button{
+	margin:0 0 10px 10px;
+	display: inline-block;
+	position: relative;
+	font-weight: bold;
+	padding:1px 5px;
+	cursor: pointer;
+	border: solid 3px #000;
+	font-size: 14px;
+	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	background: #FFF;
+	color: #000;
+}
+
+#fixedPanel{
+	position: fixed;
+	bottom: 0;
+	background:#FFF;
+	border-top: solid 3px black;
+	left: 0;
+	right:0;
+	padding: 10px;
+	display:none;
+	z-index: 20;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+#fixedPanel div{
+	font-family: icons;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	font-size: 28px;
+	padding:0 6px;
+	cursor: pointer;
+	flex-shrink:0;
+}
+
+#fixedPanel div.spacer{
+	flex-shrink:1;	
+	cursor: default;
+}
+
+#fixedPanel div.active{
+	color: #484;
+}
+
+.rlib_slider{
+	background:#EEE;
+	vertical-align:middle;
+	text-align:center;
+	overflow:hidden;
+	padding:0;
+}
+
+.rlib_hfilled{
+	position: absolute;
+	left: 0;
+	height: 100%;
+	background: #484;
+}
+
+.rlib_limit{
+	position: absolute;
+	height: 100%;
+	background: #000;
+}
+
+.rlib_tip{
+	position: absolute;
+	background: #000;
+	color: #FFF;
+	display: none;
+	z-index: 500;
+	font-size: 16px;
+	padding: 0 3px;
+	text-align: center;
+}
+
+.rlib_mslider canvas, .rlib_mslider .zone{
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	overflow: hidden;
+}
+
+.rlib_rating{
+	font-family: icons;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+}
+
+.rlib_rating .star{
+	display:inline-block;
+	cursor: pointer;
+	font-weight: normal;
+}
+
+.rlib_rating .star:not(.active){
+	opacity: .3;
+}
+
+.rlib_rating.set .star{
+	color:#484;
+}
+
+@media (max-width:799px){
+	header{
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		z-index: 30;
+	}
+	#songblock, #controls{
+		position: relative;
+		right: inherit;
+		left: inherit;
+		width: auto;
+		flex-shrink:0;
+	}
+	header, nav{
+		position: relative;
+		height:auto;
+		top:inherit;
+		width:inherit;
+		border-bottom: solid 3px #000;
+		border-right: none;
+	}
+	nav{
+		min-height: 95vh;
+		min-height: calc(100vh - 23px);
+	}
+	#main{
+		padding:0;
+	}
+	#main h1{
+		padding-top: 10px;
+	}
+	#fixedPanel.active{
+		display:flex;
+	}
+	
+	#main .group h2{
+		top:0;
+	}
+	
+	#songblock{
+		height: auto;
+		padding: 10px;
+		display:flex;
+		flex-direction: column;
+		flex-shrink:1;
+		flex-grow:1;
+	}
+	
+	#title, #infos1, #infos2{
+		flex-shrink:0;
+	}
+	
+	#cover{
+		position: relative;
+		margin: -20px -20px 10px -20px;
+		width: 100%;
+		max-height: 100vw;
+		background-position: center;
+		padding:0 20px 0 0;
+		flex-grow:1;
+	}
+	
+	#cover.nocover{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 240px;
+	}
+}
+@media (max-width:499px){
+	.track{
+		padding:5px 50px 5px 10px;
+		height: 50px;
+		position: relative;
+		display:block;
+	}
+	
+	.track .no, .track .album, .track .duration, .track .rating{
+		display: none;
+	}
+	
+	.track .title, .track .artist{
+		display:block;
+		max-width:none;
+		width:auto;
+	}
+	
+	.track .control{
+		position: absolute;
+		top:10px;
+		height:20px;
+		width:20px;
+		font-size: 20px;
+		border-left:solid 3px #000;
+		padding:10px;
+	}
+	
+	.track .control{
+		right:-10px;
+	}
+	
+	.track .control ~ .control{
+		right:35px;
+	}
+	
+	.track .duration:before{
+		content:" (";
+	}
+	
+	.track .duration:after{
+		content:")";
+	}
+}
