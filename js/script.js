@@ -215,7 +215,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	/**
 	 * Return formatted string for specified track.<br>
 	 * Result: {formatted_string:(string)formatted_string}
-	 * format_string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%IN - track number in playlist<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time
+	 * format_string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time<br>
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
 	 * @param {int} playlist_id
@@ -244,7 +244,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 * Similar to <i>track</i> but you can choose to get more fields.<br>
 	 * Following fields are always provided: album, artist, bitrate, channels_count, date, duration, filesize, genre, id, playlist_id, rating, title<br>
 	 * Additional fields are: channels, path, extension, filename, arating, folder, creationdate, creationtime, disc, track, modificationdate, modificationtime<br>
-	 * Result: {field:value,}<br/>
+	 * Result: {field:value,}<br>
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
 	 * @param {int} playlist_id
@@ -365,9 +365,9 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 * Returns list of playlist entries.<br>
 	 * Param fields can contain either a list of field or a AIMP string format.<br>
 	 * Fields are: id, title, artist, album, date, genre, bitrate, duration, filesize, rating, foldername<br>
-	 * Format string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%IN - track number in playlist<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time<br/>
+	 * Format string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time<br>
 	 * Result : {count_of_found_entries:(int),total_entries_count:(int),entries:[[(int)id?,title?,artist?,album?,(string)date?,genre?,(int,kb/s)bitrate?,(int,ms)duration?,(int,bytes)filesize?,rating?,foldername?]]}<br>
-	 * <b>Fields order depends on the fields parameter</b><br/>
+	 * <b>Fields order depends on the fields parameter</b><br>
 	 * Result when field is a <b>format string</b> : {count_of_found_entries:(int),total_entries_count:(int),entries:[[(string)track],]}<br>
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
@@ -389,11 +389,10 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 		call("GetPlaylistEntries", params, successCallback, errorCallback);
 	};
 	
-	
 	/**
 	 * Returns list of playlist entries.<br>
 	 * Similar to <i>loadPlaylist</i> but allows more fields and map the objects.<br>
-	 * Fields are: album, artist, bitrate, channels, path, extension, filename, genre, samplerate, duration, filesize, title, date, folder, id, creationdate, creationtime, disc, track, arating (auto), rating, modificationdate, modificationtime<br>
+	 * Fields are: album, artist, bitrate, channels, path, extension, filename, genre, samplerate, duration, filesize, title, date, folder, id, creationdate, creationtime, disc, track, arating (automatic rating), rating, modificationdate, modificationtime<br>
 	 * Result : {count_of_found_entries:(int),total_entries_count:(int),entries:[{field:value,},]}<br>
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
@@ -461,13 +460,13 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	};
 	
 	/**
-	 * Returns list of queued entries.
-	 * Param fields can contain either a list of field or a AIMP string format.<br/>
-	 * Fields are : playlist_id, id, title, artist, album, date, genre, bitrate, duration, filesize, rating, foldername<br/>
-	 * Format string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%IN - track number in playlist<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time<br/><br/>
-	 * Result : {count_of_found_entries:(int),total_entries_count:(int),entries:[[(int)id?,title?,artist?,album?,(string)date?,genre?,(int,kb/s)bitrate?,(int,ms)duration?,(int,bytes)filesize?,rating?,foldername?]]}<br/>
-	 * <b>Fields order depends on the fields parameter</b><br/>
-	 * Result when field is a <b>format string</b> : [[(string)track],]<br/>
+	 * Returns list of queued entries.<br>
+	 * Param fields can contain either a list of field or a AIMP string format.<br>
+	 * Fields are : playlist_id, id, title, artist, album, date, genre, bitrate, duration, filesize, rating, foldername<br>
+	 * Format string can contain following format arguments:<br>%A - album<br>%a - artist (=%R)<br>%B - bitrate<br>%C - channels count<br>%D - file path<br>%E - extension<br>%F - file name<br>%G - genre<br>%H - sample rate<br>%L - duration<br>%R - artist<br>%S - filesize<br>%T - title<br>%Y - date<br>%M - rating ("*" to "*****")<br>%PD - parent folder<br>%DC - file creation date<br>%TC - file creation time<br>%DN - disc number<br>%TN - track number<br>%IF(A,B,C) - if A is empty use C else use B<br>%Up(A) - A uppercase<br>%Low(A) - A lowercase<br>%Caps(A) - A camel case<br>%Char(A) - character with code A<br>%Replace(A,B,C) - replace B by C in A<br>%RT - rating (1.00 to 5.00)<br>%DM - file modification date<br>%TM - file modification time<br>
+	 * Result : {count_of_found_entries:(int),total_entries_count:(int),entries:[[(int)id?,title?,artist?,album?,(string)date?,genre?,(int,kb/s)bitrate?,(int,ms)duration?,(int,bytes)filesize?,rating?,foldername?]]}<br>
+	 * <b>Fields order depends on the fields parameter</b><br>
+	 * Result when field is a <b>format string</b> : {count_of_found_entries:(int),total_entries_count:(int),entries:[(string)track],}<br>
 	 * @param {function(result,params,method)} successCallback
 	 * @param {function(error,params,method)} errorCallback
 	 * @param {string|string[]} fields [opt] default is ["id","title"]
@@ -483,6 +482,75 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 		if(typeof count !== "undefined")params.entries_count = count;
 		if(typeof search !== "undefined")params.search_string = search;
 		call("GetQueuedEntries", params, successCallback, errorCallback);
+	};
+	
+	
+	/**
+	 * Returns list of queued entries.<br>
+	 * Similar to <i>loadQueue</i> but allows more fields and map the objects.<br>
+	 * Fields are: album, artist, bitrate, channels, path, extension, filename, genre, samplerate, duration, filesize, title, date, folder, id, creationdate, creationtime, disc, track, arating (automatic rating), rating, modificationdate, modificationtime<br>
+	 * Result : {count_of_found_entries:(int),total_entries_count:(int),entries:[{field:value,},]}<br>
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(error,params,method)} errorCallback
+	 * @param {string[]} fields
+	 * @param {int} start [opt] start at index
+	 * @param {int} count [opt] entries count
+	 * @param {string} search [opt] filter only tracks with specified string in one of these : title, artist, album, date, genre
+	 */
+	wrk.loadQueueMapped = function(successCallback, errorCallback, fields, start, count, search){
+		var lffields = [], lfreq = "", lpfields = [];
+		
+		//var lp = ["id","title","artist","album","date","genre","bitrate","duration","filesize","rating","foldername"];
+		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", title:"%IF(%T,%T,%F)"};
+		
+		for(var i=0;i<fields.length;i++){
+			if(lf[fields[i]]){
+				lffields.push(fields[i]);
+				lfreq += lf[fields[i]]+"%Char(30)";
+			}else{
+				lpfields.push(fields[i]);
+			}
+		}
+		
+		var ret = {entries:[]};
+		var r1 = true;
+		successCallback = successCallback || defSuccessCallback;
+				
+		wrk.loadQueue(function(r,p,m){
+			ret.count_of_found_entries = r.count_of_found_entries;
+			ret.total_entries_count = r.total_entries_count;
+			
+			for(var ei=0;ei<r.entries.length;ei++){
+				if(r1) ret.entries[ei] = {};
+				
+				var f = r.entries[ei][0].split("\u001e");
+				lffields.forEach(function(n,i){
+					ret.entries[ei][n] = f[i];
+				});
+			};
+			
+			if(!r1){
+				p.fields = fields;
+				successCallback(ret, p, m);
+			}
+			r1 = false;
+		}, errorCallback, lfreq, start, count, search);
+		
+		wrk.loadQueue(function(r,p,m){
+			for(var ei=0;ei<r.entries.length;ei++){
+				if(r1) ret.entries[ei] = {};
+				
+				lpfields.forEach(function(n,i){
+					ret.entries[ei][n] = r.entries[ei][i];
+				});
+			};
+			
+			if(!r1){
+				p.fields = fields;
+				successCallback(ret, p, m);
+			}
+			r1 = false;
+		}, errorCallback, lpfields, start, count, search);
 	};
 	
 	/**
