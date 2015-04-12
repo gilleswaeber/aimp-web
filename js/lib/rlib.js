@@ -283,27 +283,49 @@ var RLib = (function(){
 		return vmslider;
 	};
 	
-	rlib.rating = function(el, def, value, callback){
-		el = $(el).addClass("rlib_rating");
-		el.get(0).addEventListener("contextmenu", function(e){e.preventDefault(); rating.setValue(0); callback(0); return false;}, true);
+	var ratingTemplate = (function(){
+		var ratingTemplate = document.createElement("div");
+		ratingTemplate.className = "rlib_rating";
+		[1,2,3,4,5].forEach(function(i){
+			var star = document.createElement("div");
+			star.appendChild(document.createTextNode("starBlack"));
+			star.className = "star";
+			ratingTemplate.appendChild(star);
+		});		
+		return ratingTemplate;
+	})();
+	
+	rlib.rating = function(def, value, callback){
+		var rating = {};
+		
+		rating.el = ratingTemplate.cloneNode(true);
+		rating.el.addEventListener("contextmenu", function(e){
+			e.preventDefault();
+			rating.setValue(0);
+			callback(0);
+		}, true);
+		rating.el.childNodes.forEach(function(star, k){
+			star.addEventListener("click", function(){
+				rating.setValue(k+1);
+				callback(k+1);
+			});
+		});
 		
 		if(value === 0) value = -1;
 		else value = Math.round(value);
 		def = Math.round(def)||0;
-		
-		var rating = {};
-		
-		el.get(0).innerHTML = '<div data-star="54321" class="star">starBlack</div><div data-star="5432" class="star">starBlack</div><div data-star="543" class="star">starBlack</div><div data-star="54" class="star">starBlack</div><div data-star="5" class="star">starBlack</div>';
 				
 		function update(){
-			el.find(".star").removeClass("active");
 			if(value === -1){
-				el.removeClass("set");
-				el.find(".star[data-star*="+def+"]").addClass("active");
+				rating.el.classList.remove("set");
 			}else{
-				el.addClass("set");
-				el.find(".star[data-star*="+value+"]").addClass("active");
+				rating.el.classList.add("set");
 			}
+			var n = (value === -1 ? def : value);
+			rating.el.childNodes.forEach(function(star, i){
+				if(n > i) star.classList.add("active");
+				else star.classList.remove("active");
+			});
 		}
 		
 		rating.setValue = function(v){

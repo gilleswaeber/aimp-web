@@ -714,12 +714,70 @@ function Ihm(ctrl, configTables){
 	var i18n;
 	var conf;
 	var equalizers = {balance:{}, speed:{}, reverb:{}, echo:{}, chorus:{}, flanger:{}, group:{enabled:false, values:[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50]}};
+	var trackTemplate, buttonTemplates, groupTemplate;
 	
 	DEBUG.ctrack = ctrack;
 	DEBUG.playlists = playlists;
 	
 	public.i18n = function(messages){
 		i18n = messages;
+
+		// DOM templates
+		trackTemplate = document.createElement("div");
+		trackTemplate.className = "track";
+		(function(){
+			var no = document.createElement("div");
+			no.appendChild(document.createTextNode(""));
+			no.className = "no";
+			trackTemplate.appendChild(no);
+
+			var title = document.createElement("div");
+			title.appendChild(document.createTextNode(""));
+			title.className = "title";
+			trackTemplate.appendChild(title);
+
+			var controls = document.createElement("div"), btn;
+			controls.className = "controls";
+			trackTemplate.appendChild(controls);
+
+			var album = document.createElement("div");
+			album.appendChild(document.createTextNode(""));
+			album.className = "album";
+			trackTemplate.appendChild(album);
+
+			var artist = document.createElement("div");
+			artist.appendChild(document.createTextNode(""));
+			artist.className = "artist";
+			trackTemplate.appendChild(artist);
+
+			var duration = document.createElement("div");
+			duration.appendChild(document.createTextNode(""));
+			duration.className = "duration";
+			trackTemplate.appendChild(duration);
+		})();
+
+		buttonTemplates = {
+			download:(function(){
+				var btn = document.createElement("div");
+				btn.appendChild(document.createTextNode("download"));
+				btn.className = "control";
+				return btn;
+			})(),
+			queue:(function(){
+				var btn = document.createElement("div");
+				btn.appendChild(document.createTextNode("queue"));
+				btn.className = "control queue";
+				btn.title = i18n.playlists.queueAdd();
+				return btn;
+			})()
+		};
+
+		groupTemplate = document.createElement("div");
+		groupTemplate.appendChild(document.createElement("h2"));
+		groupTemplate.firstChild.appendChild(document.createTextNode(""));
+		groupTemplate.firstChild.addEventListener("click", function(){
+			console.log(this);
+		});
 	};
 		
 	public.init = function(){
@@ -925,32 +983,32 @@ function Ihm(ctrl, configTables){
 		}
 		$.scrollTo("#main h1");
 	}
-	function showPlaylist(id, track_id){
+	function showPlaylist(playlist_id, track_id){
 		$("#main .detach").detach();
 		$("#fixedPanel").addClass("active");
 		var ot = tab;
 		tab = 1;
 		$("nav a").removeClass("active");
-		$("#playlists a[data-id="+id+"]").addClass("active");
-		if(!playlists[id].loaded){
-			ctrl.loadPlaylist(id);
-			if(id===tabpls)return;
-			$("#main").html($("<h1>").text(playlists[id].title));
+		$("#playlists a[data-id="+playlist_id+"]").addClass("active");
+		if(!playlists[playlist_id].loaded){
+			ctrl.loadPlaylist(playlist_id);
+			if(playlist_id===tabpls)return;
+			$("#main").html($("<h1>").text(playlists[playlist_id].title));
 			$("#main").append($("<div>").addClass("message").addClass("fill").text(i18n.generic.loading));
 		}else{
-			var bench = [new Date().getTime()], m = $("#main");
+			var bench = [new Date().getTime()], m = $("#main"), dm = m.get(0);
 			
-			m.html($("<h1>").text(playlists[id].title));
+			m.html($("<h1>").text(playlists[playlist_id].title));
 			var group = $("<div>").appendTo(m).text(i18n.playlists.groupBy).addClass("groups");
 			var sort = $("<div>").appendTo(m).text(i18n.playlists.sortBy).addClass("sorts");
 			
-			var grouped = (conf.globalSort ? conf.sort.gGroup : conf.sort["gp"+playlists[id].title.hashCode()]) || [];
-			var sorted = (conf.globalSort ? conf.sort.gSort : conf.sort["p"+playlists[id].title.hashCode()]) || [];
+			var grouped = (conf.globalSort ? conf.sort.gGroup : conf.sort["gp"+playlists[playlist_id].title.hashCode()]) || [];
+			var sorted = (conf.globalSort ? conf.sort.gSort : conf.sort["p"+playlists[playlist_id].title.hashCode()]) || [];
 
 			grouped.forEach(function(v){
 				$("<span>").appendTo(group).text(i18n.playlists[v]()).addClass("active").append($("<span>").addClass("remove").text("no")).click(function(){
 					if(conf.globalSort) conf.sort.gGroup = _.without(grouped, v);
-					else conf.sort["gp"+playlists[id].title.hashCode()] = _.without(grouped, v);
+					else conf.sort["gp"+playlists[playlist_id].title.hashCode()] = _.without(grouped, v);
 					localStorage.setItem("AimpWebConf", JSON.stringify(conf));
 					showPlaylist(tabpls);
 				});
@@ -960,7 +1018,7 @@ function Ihm(ctrl, configTables){
 				$("<span>").appendTo(group).text(i18n.playlists[v]()).click(function(){
 					grouped.push(v);
 					if(conf.globalSort) conf.sort.gGroup = grouped;
-					else conf.sort["gp"+playlists[id].title.hashCode()] = grouped;
+					else conf.sort["gp"+playlists[playlist_id].title.hashCode()] = grouped;
 					localStorage.setItem("AimpWebConf", JSON.stringify(conf));
 					showPlaylist(tabpls);
 				});
@@ -969,7 +1027,7 @@ function Ihm(ctrl, configTables){
 			sorted.forEach(function(v){
 				$("<span>").appendTo(sort).text(i18n.playlists[v]()).addClass("active").append($("<span>").addClass("remove").text("no")).click(function(){
 					if(conf.globalSort) conf.sort.gSort = _.without(sorted, v);
-					else conf.sort["p"+playlists[id].title.hashCode()] = _.without(sorted, v);
+					else conf.sort["p"+playlists[playlist_id].title.hashCode()] = _.without(sorted, v);
 					localStorage.setItem("AimpWebConf", JSON.stringify(conf));
 					showPlaylist(tabpls);
 				});
@@ -979,7 +1037,7 @@ function Ihm(ctrl, configTables){
 				$("<span>").appendTo(sort).text(i18n.playlists[v]()+" ").click(function(){
 					sorted.push(v);
 					if(conf.globalSort) conf.sort.gSort = sorted;
-					else conf.sort["p"+playlists[id].title.hashCode()] = sorted;
+					else conf.sort["p"+playlists[playlist_id].title.hashCode()] = sorted;
 					localStorage.setItem("AimpWebConf", JSON.stringify(conf));
 					showPlaylist(tabpls);
 				});
@@ -988,22 +1046,22 @@ function Ihm(ctrl, configTables){
 			var psort = grouped, tracks;
 			psort = psort.concat(sorted);
 						
-			if(psort.length === 0) tracks = _.range(playlists[id].tracks.length);
-			else if(playlists[id].cache && playlists[id].cacheD === JSON.stringify(psort)) tracks = playlists[id].cache;
+			if(psort.length === 0) tracks = _.range(playlists[playlist_id].tracks.length);
+			else if(playlists[playlist_id].cache && playlists[playlist_id].cacheD === JSON.stringify(psort)) tracks = playlists[playlist_id].cache;
 			else{
-				playlists[id].cacheD = JSON.stringify(psort);
-				playlists[id].cache = _.range(playlists[id].tracks.length);
-				playlists[id].cache.sort(function(a, b){
+				playlists[playlist_id].cacheD = JSON.stringify(psort);
+				playlists[playlist_id].cache = _.range(playlists[playlist_id].tracks.length);
+				playlists[playlist_id].cache.sort(function(a, b){
 					for(var  i=0;i<psort.length;i++){
-						var av=playlists[id].tracks[a][psort[i]], bv = playlists[id].tracks[b][psort[i]];
+						var av=playlists[playlist_id].tracks[a][psort[i]], bv = playlists[playlist_id].tracks[b][psort[i]];
 						if(psort[i] === "track"){
-							av = 1*(av||0)+1000*(playlists[id].tracks[a].disc || 0);
-							bv = 1*(bv||0)+1000*(playlists[id].tracks[b].disc || 0);
+							av = 1*(av||0)+1000*(playlists[playlist_id].tracks[a].disc || 0);
+							bv = 1*(bv||0)+1000*(playlists[playlist_id].tracks[b].disc || 0);
 						}else if(psort[i] === "rating"){
 							if(av > 0) av = 5-av;
-							else av = 15-playlists[id].tracks[a].arating || 15;
+							else av = 15-playlists[playlist_id].tracks[a].arating || 15;
 							if(bv > 0) bv = 5-bv;
-							else bv = 15-playlists[id].tracks[b].arating || 15;
+							else bv = 15-playlists[playlist_id].tracks[b].arating || 15;
 						}
 						
 						if(av !== bv)
@@ -1012,7 +1070,7 @@ function Ihm(ctrl, configTables){
 					};
 					return 0;
 				});
-				tracks = playlists[id].cache;
+				tracks = playlists[playlist_id].cache;
 			}
 			
 			if(grouped.length > 0){
@@ -1024,10 +1082,13 @@ function Ihm(ctrl, configTables){
 			var altn = sorted.indexOf("track") >= 0;
 			var html = ""+(grouped.length>0?"<div>":"");
 			
+			// group for track inserting
+			var group = dm;
+			
 			bench.push(new Date().getTime());
 						
 			tracks.forEach(function(i,k){
-				var v = playlists[id].tracks[i];
+				var v = playlists[playlist_id].tracks[i];
 				
 				if(grouped.length>0){
 					var newGroup = false;
@@ -1039,64 +1100,73 @@ function Ihm(ctrl, configTables){
 						}
 					};
 					if(newGroup){
-						//m = $("<div>").addClass("group").appendTo("#main");
-						html += '</div><div class="group">';
 						var gid = "";
 						grouped.forEach(function(v,k){
 							gid += (k!==0?" - ":"") + lastGroup[v];
 						});
-						html += '<h2 onclick="$(this.parentNode).toggleClass(\'folded\');">'+htmlsafe(gid)+'</h2>';
+						
+						group = groupTemplate.cloneNode(true);
+						group.firstChild.firstChild.data = gid;
+						dm.appendChild(group);
 					}
 				}
 				
-				html += '<div class="track'+(id === ctrack.pls && v.id === ctrack.id?' active':'')+(queue.map[id] && queue.map[id][v.id]?' queued':'')+'" data-id="'+v.id+'">';
-				if(altn && v.track) html += '<div class="no">'+((v.disc?v.disc+"-":"")+1*v.track)+'</div>';
-				else html += '<div class="no">'+(k+1)+".</div>";
-				html += '<div class="title" title="'+htmlsafe(v.title)+'" onclick="ctrl.play('+id+','+v.id+')">'+htmlsafe(v.title)+"</div>";
-				if(conf.downloadButton) html += '<div class="control" onclick="ctrl.download('+id+','+v.id+')">download</div>';
-				html += '<div class="control queue" title="'+htmlsafe(i18n.playlists.queueAdd())+'" onclick="ctrl.queue('+id+','+v.id+')">queue</div>';
-				html += '<div class="album" title="'+htmlsafe(v.album)+'">'+htmlsafe(v.album)+'</div>';
-				html += '<div class="artist" title="'+htmlsafe(v.artist)+'">'+htmlsafe(v.artist)+'</div>';
-				html += '<div class="duration">'+time(v.duration)+'</div>';
-				html += '<div class="rating"></div>';
-				html += '</div>';
+				var track = trackTemplate.cloneNode(true);
+				if(playlist_id === ctrack.pls && v.id === ctrack.id) track.className += " active";
+				if(queue.map[playlist_id] && queue.map[playlist_id][v.id]) track.className += " queued";
+				track.dataset.id = v.id;
 				
-				//var t = $("<div>").addClass("track").appendTo(m);
-				//if(altn && v.track) $("<div>").addClass("no").text((v.disc?v.disc+"-":"")+1*v.track).appendTo(t);
-				//else $("<div>").addClass("no").text((k+1)+".").appendTo(t);
-				//$("<div>").addClass("title").text(v.title).attr("title",v.title).appendTo(t).click(function(){ctrl.play(id,v.id);});
-				//if(conf.downloadButton)$("<div>").addClass("control").text("download").appendTo(t).click(function(){ctrl.download(id, v.id);});
-				//$("<div>").addClass("control").addClass("queue").text("queue").attr("title",i18n.playlists.queueAdd).appendTo(t).click(function(){ctrl.queue(id,v.id);});
-				//$("<div>").addClass("album").text(v.album).attr("title",v.album).appendTo(t);
-				//$("<div>").addClass("artist").text(v.artist).attr("title",v.artist).appendTo(t);
-				//$("<div>").addClass("duration").text(time(v.duration)).appendTo(t);
-				/*v.ratingEl = RLib.rating($("<div>").addClass("rating").appendTo(t), v.arating, v.rating, function(r){
-					ctrl.setRating(id, v.id, r);
-					if(sorted.indexOf("rating")>=0)playlists[id].loaded = false;
-				});*/
-				//if(id === ctrack.pls && v.id === ctrack.id)t.addClass("active");
-				//if(queue.map[id] && queue.map[id][v.id])t.addClass("queued");
-				//t.get(0).dataset.id=v.id;
-				//$(t).appendTo(m);
+				// Track number
+				if(altn && v.track) track.childNodes[0].firstChild.data = (v.disc?v.disc+"-":"")+1*v.track;
+				else track.childNodes[0].firstChild.data = k+1;
 				
+				// Title
+				track.childNodes[1].title = v.title;
+				track.childNodes[1].firstChild.data = v.title;
+				track.childNodes[1].addEventListener("click", function(){
+					ctrl.play(playlist_id, v.id);
+				});
+				
+				// Controls
+				var btn;
+				if(conf.downloadButton){
+					btn = buttonTemplates.download.cloneNode(true);
+					btn.addEventListener("click", function(){
+						ctrl.download(playlist_id, v.id);
+					});
+					track.childNodes[2].appendChild(btn);
+				}
+				btn = buttonTemplates.queue.cloneNode(true);
+				btn.addEventListener("click", function(){
+					ctrl.queue(playlist_id, v.id);
+				});
+				track.childNodes[2].appendChild(btn);
+				
+				// Album
+				track.childNodes[3].title = v.album;
+				track.childNodes[3].firstChild.data = v.album;
+				
+				// Artist
+				track.childNodes[4].title = v.artist;
+				track.childNodes[4].firstChild.data = v.artist;
+				
+				// Duration
+				track.childNodes[5].firstChild.data = time(v.duration);
+				
+				// Rating
+				v.ratingEl = RLib.rating(v.arating, v.rating, function(r){
+					ctrl.setRating(playlist_id, v.id, r);
+					if(sorted.indexOf("rating")>=0)playlists[playlist_id].loaded = false;
+				});
+				v.ratingEl.el.className += " rating";
+				track.appendChild(v.ratingEl.el);
+				
+				group.appendChild(track);				
 			});
-			
-			for(var ci=0;ci<tracks.length/100;ci++){
-				setTimeout((function(lci){return function(){
-					var m = Math.min(100*lci+100,tracks.length);
-					for(var ti=lci*100; ti<m; ti++){
-						playlists[id].tracks[tracks[ti]].ratingEl = RLib.rating('#main .track[data-id="'+playlists[id].tracks[tracks[ti]].id+'"] .rating', playlists[id].tracks[tracks[ti]].arating, playlists[id].tracks[tracks[ti]].rating, function(r){
-							ctrl.setRating(id, playlists[id].tracks[tracks[ti]].id, r);
-							if(sorted.indexOf("rating")>=0)playlists[id].loaded = false;
-						});
-					};
-				};})(ci),(2+ci)*10);
-			}
-			
-			if(grouped.length>0) html += '</div>';
-			m.append(html);
 						
 			bench.push(new Date().getTime());
+			
+			//alert("It took "+(bench[1]-bench[0])+"ms to sort and "+(bench[2]-bench[1])+"ms to show.");
 			
 			$("<p>").appendTo("#main").text(" ");
 			$("<p>").appendTo("#main").text(" ");
@@ -1105,10 +1175,10 @@ function Ihm(ctrl, configTables){
 				(function(){$.scrollTo("#main .track[data-id="+(track_id || tabplstr)+"]", {offset:{ top:-200}, duration:500});})();
 				track_id = null;
 			}else{
-				if(tabpls !== id || ot !== 1)$.scrollTo("#main h1");
+				if(tabpls !== playlist_id || ot !== 1)$.scrollTo("#main h1");
 			}
 		}
-		tabpls = id;
+		tabpls = playlist_id;
 		tabplstr = track_id;
 	};
 	public.updatePlaylists = function(o){
@@ -1216,13 +1286,14 @@ function Ihm(ctrl, configTables){
 			$("#infos1").text((ctrack.artist = t.artist)+(t.artist&&t.album?" - ":"")+(ctrack.album = t.album));
 			//console.log(t);
 			var i=$("#infos2").empty();
-			$("<span>").appendTo(i).text(t.filename.indexOf("http")===0?"HTTP":t.extension);
-			$("<span>").appendTo(i).text(t.bitrate+"kbps");
-			$("<span>").appendTo(i).text(t.channels);
-			$("<span>").appendTo(i).text(t.samplerate);
-			RLib.rating($("<span>").addClass("rating").appendTo(i), t.arating, t.rating, function(r){
+			$("<div>").appendTo(i).text(t.filename.indexOf("http")===0?"HTTP":t.extension);
+			$("<div>").appendTo(i).text(t.bitrate+"kbps");
+			$("<div>").appendTo(i).text(t.channels);
+			$("<div>").appendTo(i).text(t.samplerate);
+			var rating = RLib.rating(t.arating, t.rating, function(r){
 				ctrl.setRating(ctrack.pls, ctrack.id, r);
 			});
+			$(rating.el).addClass("rating").appendTo(i);
 		}
 	};
 	public.showCover = function(o){

@@ -113,7 +113,7 @@ header{
 	content: " ";
 }
 
-#infos2 span{
+#infos2 > div{
 	display: inline-block;
 	font-size:12px;
 	padding:1px 0;

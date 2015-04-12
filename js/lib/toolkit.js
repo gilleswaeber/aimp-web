@@ -1,4 +1,6 @@
 
+NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
+
 /**
  * Generic JS Toolkit containing generic functions and polyfills.
  */
