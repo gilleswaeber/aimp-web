@@ -36,6 +36,8 @@ raw =
 		queueEmpty:"La file d'attente est vide !",
 		sortBy:"Trier par : ",
 		groupBy:"Grouper par : ",
+		foldAll:"Tout replier",
+		unfoldAll:"Tout déplier",
 	},
 	settings:{
 		h:"Configuration",
@@ -55,10 +57,19 @@ raw =
 		
 		notSupported:"Cette fonctionnalité n'est pas compatible avec votre navigateur. ",
 		
+		display:"Apparence",
+		downloadButton:"Afficher le bouton de téléchargement dans les listes de lecture.",
+		showRating:"Afficher les évaluations.",
+		showInfos:"Afficher les informations détaillées, dont : bitrate, canaux, type de fichier, taux d'échantillonage et évaluation.",
+		
+		sorting:"Tri et regroupement",
+		globalSort:"Utiliser les mêmes paramètres de tri et de groupement pour toutes les listes de lecture.",
+		oneGroup:"Ne garder qu'un seul groupe déplié à la fois.",
+		resetSort:"Ceci va effacer les options de tri et de regroupement pour toutes les listes de lecture.",
+		reset:"Réinitialiser",
+		
 		misc:"Divers",
 		followTrack:"Quand la liste de lecture actuelle est ouverte, suivre la piste actuelle.",
-		globalSort:"Utiliser les mêmes paramètres de tri et de groupement pour toutes les listes de lecture.",
-		downloadButton:"Afficher le bouton de téléchargement dans les listes de lecture.",
 	},
 	equalizer:{
 		h:"Égaliseur",
@@ -112,6 +123,6 @@ raw =
 		disabled:"Désactivé",
 		blocked:"Indisponible",
 		fullscreen:"Plein écran",
-		
+		confirm:"Êtes-vous sûr de vouloir continuer ?",
 	}
 }

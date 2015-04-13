@@ -727,12 +727,12 @@ function Ihm(ctrl, configTables){
 		trackTemplate.className = "track";
 		(function(){
 			var no = document.createElement("div");
-			no.appendChild(document.createTextNode(""));
+			no.appendChild(document.createTextNode(" "));
 			no.className = "no";
 			trackTemplate.appendChild(no);
 
 			var title = document.createElement("div");
-			title.appendChild(document.createTextNode(""));
+			title.appendChild(document.createTextNode(" "));
 			title.className = "title";
 			trackTemplate.appendChild(title);
 
@@ -741,17 +741,17 @@ function Ihm(ctrl, configTables){
 			trackTemplate.appendChild(controls);
 
 			var album = document.createElement("div");
-			album.appendChild(document.createTextNode(""));
+			album.appendChild(document.createTextNode(" "));
 			album.className = "album";
 			trackTemplate.appendChild(album);
 
 			var artist = document.createElement("div");
-			artist.appendChild(document.createTextNode(""));
+			artist.appendChild(document.createTextNode(" "));
 			artist.className = "artist";
 			trackTemplate.appendChild(artist);
 
 			var duration = document.createElement("div");
-			duration.appendChild(document.createTextNode(""));
+			duration.appendChild(document.createTextNode(" "));
 			duration.className = "duration";
 			trackTemplate.appendChild(duration);
 		})();
@@ -775,7 +775,16 @@ function Ihm(ctrl, configTables){
 		groupTemplate = document.createElement("div");
 		groupTemplate.className = "group";
 		groupTemplate.appendChild(document.createElement("h2"));
-		groupTemplate.firstChild.appendChild(document.createTextNode(""));
+		groupTemplate.firstChild.appendChild((function(){
+			var df = document.createDocumentFragment();
+			df.appendChild(document.createElement("span"));
+			df.appendChild(document.createElement("div"));
+			df.appendChild(document.createElement("div"));
+			df.childNodes[0].appendChild(document.createTextNode(" "));
+			df.childNodes[1].appendChild(document.createTextNode("left"));
+			df.childNodes[2].appendChild(document.createTextNode("right"));
+			return df;
+		})());
 	};
 		
 	public.init = function(){
@@ -1129,10 +1138,32 @@ function Ihm(ctrl, configTables){
 							$(group).toggleClass("folded", status);
 							saveConfig();
 						};})(group, gid));
-						group.firstChild.firstChild.data = gid;
+						group.firstChild.firstChild.firstChild.data = gid;
 						if( conf.sort["g"+playlist_hash][gid.hashCode()] === true || (conf.sort["g"+playlist_hash][gid.hashCode()] !== false) && conf.sort["g"+playlist_hash].default){
 							group.className += " folded";
 						}
+						group.firstChild.childNodes[1].addEventListener("click", function(e){
+							e.stopPropagation();
+							var offset = window.matchMedia("(max-width:799px)").matches ? 0 : -100;
+							var prev = this.parentNode.parentNode.previousSibling;
+							if(!$(prev).hasClass("group"))$.scrollTo("#main h1", {duration:200});
+							else{
+								if($(prev).hasClass("folded"))
+									prev.firstChild.click();
+								$.scrollTo(prev, {offset:{ top:offset}});
+							}
+						});
+						group.firstChild.childNodes[2].addEventListener("click", function(e){
+							e.stopPropagation();
+							var offset = window.matchMedia("(max-width:799px)").matches ? 0 : -100;
+							var next = this.parentNode.parentNode.nextSibling;
+							if(!next)$.scrollTo(this.parentNode.parentNode.lastChild, {duration:200});
+							else{
+								if($(next).hasClass("folded"))
+									next.firstChild.click();
+								$.scrollTo(next, {offset:{ top:offset}});
+							}
+						});
 						dm.appendChild(group);
 					}
 				}
@@ -1453,14 +1484,6 @@ function Ihm(ctrl, configTables){
 		}
 		$("<span>").appendTo(m).text(i18n.settings.notificationsT);
 		
-		$("<h2>").appendTo(m).text(i18n.settings.misc);
-		$("<div>").appendTo(m).addClass("checkbox").text(conf.followTrack ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.followTrack ? "active" : "").click(function(){
-			conf.followTrack = !(conf.followTrack && true || false);
-			saveConfig();
-			showSettings();
-		});
-		$("<span>").appendTo(m).text(i18n.settings.followTrack);
-		
 		$("<h2>").appendTo(m).text(i18n.settings.sorting);
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.globalSort ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.globalSort ? "active" : "").click(function(){
 			conf.globalSort = !(conf.globalSort && true || false);
@@ -1508,6 +1531,14 @@ function Ihm(ctrl, configTables){
 		});
 		$("<span>").appendTo(m).text(i18n.settings.showInfos);
 		$("<br>").appendTo(m);
+		
+		$("<h2>").appendTo(m).text(i18n.settings.misc);
+		$("<div>").appendTo(m).addClass("checkbox").text(conf.followTrack ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.followTrack ? "active" : "").click(function(){
+			conf.followTrack = !(conf.followTrack && true || false);
+			saveConfig();
+			showSettings();
+		});
+		$("<span>").appendTo(m).text(i18n.settings.followTrack);
 		
 		$("<p>").appendTo(m).text(" ");
 		$.scrollTo("#main h1");
@@ -1630,7 +1661,7 @@ function Ctrl(){
 				en:"French", l:"Français", progress:100
 			},
 			ru:{
-				en:"Russian", l:"Русский", progress:54
+				en:"Russian", l:"Русский", progress:48
 			}
 		},
 		skins:{

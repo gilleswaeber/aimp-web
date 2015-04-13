@@ -363,9 +363,16 @@ nav a.active.playing{
 
 .group h2{
 	cursor: pointer;
+	display:flex;
 }
 
-.group h2:before{
+.group h2 span{
+	flex-grow:1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.group h2 span:before{
 	content: "minus";
 	font-family: icons;
 	-webkit-font-feature-settings: "liga";
@@ -375,13 +382,22 @@ nav a.active.playing{
 }
 
 .group.folded .track{
-	height:0;
+	height: 0;
 	padding: 0;
 	overflow: hidden;
 }
 
-.group.folded h2:before{
+.group.folded h2 span:before{
 	content: "plus";
+}
+
+.group h2 div{
+	font-family: icons;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	flex-shrink: 0;
+	padding: 3px;
+	cursor:pointer;	
 }
 
 .track{
