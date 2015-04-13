@@ -798,9 +798,7 @@ function Ihm(ctrl, configTables){
 		$("#title").click(function(){
 			if(tabpls !== ctrack.pls || tab !== 1) showPlaylist(ctrack.pls, ctrack.id);
 			else {
-				var t = $("#main .track[data-id="+(ctrack.id)+"]");
-				t.parent().removeClass("folded");
-				$.scrollTo(t, {offset:{ top:-200}, duration:500});
+				scrollToTrack(ctrack.id);
 			}
 		});
 		$("#fbmenu").click(function(){
@@ -892,11 +890,15 @@ function Ihm(ctrl, configTables){
 		else if(t<360000)return Math.floor(t/3600)+pad2(Math.floor(t/60))+":"+pad2(t%60);
 		else return Math.floor(t/86400)+pad2(Math.floor(t/3600))+pad2(Math.floor(t/60))+":"+pad2(t%60);
 	}
-	function htmlsafe(t){
-		return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	}
 	function saveConfig(){
 		localStorage.setItem("AimpWebConf", JSON.stringify(conf));
+	}
+	function scrollToTrack(id){
+		var t = $("#main .track[data-id="+id+"]");
+		if(t.parent().hasClass("group") && t.parent().hasClass("folded")){
+			t.parent().children().first().click();
+		};
+		$.scrollTo(t, {offset:{ top:-200}, duration:500});
 	}
 	
 	public.updateState = function(o, p){
@@ -1005,7 +1007,7 @@ function Ihm(ctrl, configTables){
 			
 			var grouped = (conf.globalSort ? conf.sort.gGroup : conf.sort["gp"+playlist_hash]) || [];
 			var sorted = (conf.globalSort ? conf.sort.gSort : conf.sort["p"+playlist_hash]) || [];
-			if(!conf.sort["g"+playlist_hash]) conf.sort["g"+playlist_hash] = {default:false};
+			if(!conf.sort["g"+playlist_hash]) conf.sort["g"+playlist_hash] = {default:(conf.oneGroup&&true||false)};
 
 			grouped.forEach(function(v){
 				$("<span>").appendTo(group).text(i18n.playlists[v]()).addClass("active").append($("<span>").addClass("remove").text("no")).click(function(){
@@ -1077,21 +1079,19 @@ function Ihm(ctrl, configTables){
 			
 			if(grouped.length > 0){
 				m.append($("<button>").text(i18n.playlists.foldAll).click(function(){
-						m.find(".group").addClass("folded");
-						conf.sort["g"+playlist_hash] = {default:true};
-						saveConfig();
-					}))
-					.append($("<button>").text(i18n.playlists.unfoldAll).click(function(){
-						m.find(".group").removeClass("folded");
-						conf.sort["g"+playlist_hash] = {default:false};
-						saveConfig();
-					})
-				);
+					m.find(".group").addClass("folded");
+					conf.sort["g"+playlist_hash] = {default:true};
+					saveConfig();
+				}));
+				if(!conf.oneGroup) m.append($("<button>").text(i18n.playlists.unfoldAll).click(function(){
+					m.find(".group").removeClass("folded");
+					conf.sort["g"+playlist_hash] = {default:false};
+					saveConfig();
+				}));
 			}
 			
 			var lastGroup = {};
 			var altn = sorted.indexOf("track") >= 0;
-			var html = ""+(grouped.length>0?"<div>":"");
 			
 			// group for track insertin
 			var group = dm;
@@ -1118,8 +1118,15 @@ function Ihm(ctrl, configTables){
 						
 						group = groupTemplate.cloneNode(true);
 						group.firstChild.addEventListener("click", (function(group, gid){return function(){
-							$(group).toggleClass("folded");
-							conf.sort["g"+playlist_hash][gid.hashCode()] = $(group).hasClass("folded");
+							var status = !$(group).hasClass("folded");
+							if(conf.oneGroup){
+								$("#main .group").addClass("folded");
+								conf.sort["g"+playlist_hash] = {default:true};
+								conf.sort["g"+playlist_hash][gid.hashCode()] = false;
+							}else{
+								conf.sort["g"+playlist_hash][gid.hashCode()] = status;
+							}
+							$(group).toggleClass("folded", status);
 							saveConfig();
 						};})(group, gid));
 						group.firstChild.firstChild.data = gid;
@@ -1173,12 +1180,14 @@ function Ihm(ctrl, configTables){
 				track.childNodes[5].firstChild.data = time(v.duration);
 				
 				// Rating
-				v.ratingEl = RLib.rating(v.arating, v.rating, function(r){
-					ctrl.setRating(playlist_id, v.id, r);
-					if(sorted.indexOf("rating")>=0)playlists[playlist_id].loaded = false;
-				});
-				v.ratingEl.el.className += " rating";
-				track.appendChild(v.ratingEl.el);
+				if(!conf.hideRatings){
+					v.ratingEl = RLib.rating(v.arating, v.rating, function(r){
+						ctrl.setRating(playlist_id, v.id, r);
+						if(sorted.indexOf("rating")>=0)playlists[playlist_id].loaded = false;
+					});
+					v.ratingEl.el.className += " rating";
+					track.appendChild(v.ratingEl.el);
+				}
 				
 				group.appendChild(track);				
 			});
@@ -1192,8 +1201,7 @@ function Ihm(ctrl, configTables){
 			$("<p>").appendTo("#main").text(" ");
 			$("<p>").appendTo("#main").text(" ");
 			if(track_id || tabplstr){
-				//console.log(track_id || tabplstr);
-				(function(){$.scrollTo("#main .track[data-id="+(track_id || tabplstr)+"]", {offset:{ top:-200}, duration:500});})();
+				scrollToTrack(track_id || tabplstr);
 				track_id = null;
 			}else{
 				if(tabpls !== playlist_id || ot !== 1)$.scrollTo("#main h1");
@@ -1452,14 +1460,30 @@ function Ihm(ctrl, configTables){
 			showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.followTrack);
-		$("<br>").appendTo(m);
+		
+		$("<h2>").appendTo(m).text(i18n.settings.sorting);
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.globalSort ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.globalSort ? "active" : "").click(function(){
 			conf.globalSort = !(conf.globalSort && true || false);
 			saveConfig();
 			showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.globalSort);
-		
+		$("<br>").appendTo(m);
+		$("<div>").appendTo(m).addClass("checkbox").text(conf.oneGroup ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.oneGroup ? "active" : "").click(function(){
+			conf.oneGroup = !(conf.oneGroup && true || false);
+			saveConfig();
+			showSettings();
+		});
+		$("<span>").appendTo(m).text(i18n.settings.oneGroup);
+		$("<br>").appendTo(m);
+		$("<br>").appendTo(m);
+		$("<button>").appendTo(m).text(i18n.settings.reset).click(function(){
+			if(confirm(i18n.settings.resetSort()+"\n"+i18n.generic.confirm())){
+				conf.sort = {};
+				saveConfig();
+			}
+		});
+		$("<span>").appendTo(m).text(" "+i18n.settings.resetSort());
 		
 		$("<h2>").appendTo(m).text(i18n.settings.display);
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.downloadButton ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.downloadButton ? "active" : "").click(function(){
@@ -1468,24 +1492,14 @@ function Ihm(ctrl, configTables){
 			showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.downloadButton);
-		$("<br>").appendTo(m);
-		
+		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(!conf.hideRatings ? i18n.generic.enabled : i18n.generic.disabled).addClass(!conf.hideRatings ? "active" : "").click(function(){
 			conf.hideRatings = !(conf.hideRatings && true || false);
 			saveConfig();
 			showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.showRating);
-		$("<br>").appendTo(m);
-		
-		$("<div>").appendTo(m).addClass("checkbox").text(!conf.hideSort ? i18n.generic.enabled : i18n.generic.disabled).addClass(!conf.hideSort ? "active" : "").click(function(){
-			conf.hideSort = !(conf.hideSort && true || false);
-			saveConfig();
-			showSettings();
-		});
-		$("<span>").appendTo(m).text(i18n.settings.showSort);
-		$("<br>").appendTo(m);
-		
+		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.showInfos ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.showInfos ? "active" : "").click(function(){
 			conf.showInfos = !(conf.showInfos && true || false);
 			saveConfig();

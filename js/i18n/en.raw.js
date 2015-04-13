@@ -56,14 +56,18 @@ raw =
 		notificationsT:"The player will show a notification on track change.",
 			
 		display:"Display",
-		downloadButton:"Show the download button in the playlists.",
-		showRating:"Show ratings.",
-		showSort:"Show sorting and grouping options. If a sorting or a grouping is already active but this option is disabled, it will still be applied.",
-		showInfos:"Show detailed track infos, including : bitrate, channels count, file extension and sample rate.",
+		downloadButton:"Show the download button in playlists.",
+		showRating:"Show ratings in playlists.",
+		showInfos:"Show detailed track infos, including : bitrate, channels, file extension, sample rate and rating.",
 		
 		misc:"Miscellaneous",
 		followTrack:"When current playlist is open, scroll to current track on track change.",
+		
+		sorting:"Sorting and grouping",
 		globalSort:"Use the same sort and group settings for all playlists.",
+		oneGroup:"Keep only one group expanded.",
+		resetSort:"This will erase your sorting and grouping settings for all the playlists.",
+		reset:"Reset",
 		
 		notSupported:"This feature is not supported in your browser. "
 	},
@@ -119,5 +123,6 @@ raw =
 		disabled:"Disabled",
 		blocked:"Unavailable",
 		fullscreen:"Fullscreen",
+		confirm:"Are you sure ?",
 	}
 }

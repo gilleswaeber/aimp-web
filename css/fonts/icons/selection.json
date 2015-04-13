@@ -29,31 +29,6 @@
 		{
 			"icon": {
 				"paths": [
-					"M896 512l-384 384v-179.2h-358.4v-409.6h358.4v-179.2l384 384z"
-				],
-				"attrs": [],
-				"isMulticolor": false,
-				"tags": [
-					"arrow-bold-right"
-				],
-				"grid": 20
-			},
-			"attrs": [],
-			"properties": {
-				"id": 17,
-				"order": 21,
-				"prevSize": 20,
-				"code": 58897,
-				"name": "arrow-bold-right",
-				"ligatures": "arrowRight"
-			},
-			"setIdx": 0,
-			"setId": 0,
-			"iconIdx": 17
-		},
-		{
-			"icon": {
-				"paths": [
 					"M512 128l384 384h-179.2v358.4h-409.6v-358.4h-179.2l384-384z"
 				],
 				"attrs": [],
@@ -325,6 +300,56 @@
 			"setIdx": 0,
 			"setId": 0,
 			"iconIdx": 80
+		},
+		{
+			"icon": {
+				"paths": [
+					"M716.8 256v512l-460.8-256 460.8-256z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"triangle-left"
+				],
+				"grid": 20
+			},
+			"attrs": [],
+			"properties": {
+				"id": 81,
+				"order": 35,
+				"prevSize": 20,
+				"code": 58897,
+				"name": "triangle-left",
+				"ligatures": "left"
+			},
+			"setIdx": 0,
+			"setId": 0,
+			"iconIdx": 81
+		},
+		{
+			"icon": {
+				"paths": [
+					"M768 512l-460.8 256v-512l460.8 256z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"triangle-right"
+				],
+				"grid": 20
+			},
+			"attrs": [],
+			"properties": {
+				"id": 82,
+				"order": 36,
+				"prevSize": 20,
+				"code": 58909,
+				"name": "triangle-right",
+				"ligatures": "right"
+			},
+			"setIdx": 0,
+			"setId": 0,
+			"iconIdx": 82
 		},
 		{
 			"icon": {

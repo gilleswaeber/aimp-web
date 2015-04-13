@@ -43,5 +43,9 @@ var toolkit = function(){
 		}
 	};
 	
+	toolkit.htmlSafe = function(t){
+		return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	};
+	
 	return toolkit;
 }();

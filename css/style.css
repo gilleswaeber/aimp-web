@@ -409,6 +409,7 @@ nav a.active.playing{
 }
 
 .track .control{
+	display: inline-block;
 	cursor: pointer;
 	font-family: icons;
 	margin-right: 20px;
