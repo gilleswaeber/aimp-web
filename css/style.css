@@ -447,6 +447,10 @@ nav a.active.playing{
 	overflow: hidden;
 }
 
+.track.sortable-ghost{
+	opacity: .5;
+}
+
 .track > *{
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -499,6 +503,16 @@ nav a.active.playing{
 
 .track.queued .control.queue{
 	color:#484;
+}
+
+.track .drag{
+	margin-left: 10px;
+	font-size: 20px;
+	padding-top: 2px;
+	font-family: icons;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	cursor: move;
 }
 
 .langs > div{
@@ -822,5 +836,20 @@ nav a.active.playing{
 	
 	.track .controls .control{
 		margin:0;
+	}
+	
+	#queue .track .title, #queue .track .artist{
+		left:50px;
+	}
+	
+	.track .drag{
+		margin:0;
+		left:5px;
+		top:5px;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		width: 40px !important;
+		height: 50px;
 	}
 }

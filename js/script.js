@@ -4,6 +4,7 @@
 /* global RLib */
 /* global rpc */
 /* global toolkit */
+/* global Sortable */
 
 var DEBUG = {};
 
@@ -781,6 +782,11 @@ function Ihm(ctrl, configTables){
 		queueTemplate = document.createElement("div");
 		queueTemplate.className = "track found";
 		(function(){
+			var drag = document.createElement("div");
+			drag.appendChild(document.createTextNode("menu"));
+			drag.className = "drag";
+			queueTemplate.appendChild(drag);
+			
 			var no = document.createElement("div");
 			no.appendChild(document.createTextNode(" "));
 			no.className = "no";
@@ -1060,40 +1066,34 @@ function Ihm(ctrl, configTables){
 				var track = queueTemplate.cloneNode(true);
 				
 				// Track number
-				track.childNodes[0].firstChild.data = k+1+".";
+				track.childNodes[1].firstChild.data = k+1+".";
 				
 				// Title
-				track.childNodes[1].title = v.title;
-				track.childNodes[1].firstChild.data = v.title;
-				track.childNodes[1].addEventListener("click", function(){
+				track.childNodes[2].title = v.title;
+				track.childNodes[2].firstChild.data = v.title;
+				track.childNodes[2].addEventListener("click", function(){
 					showPlaylist(v.playlist_id, v.id);
 				});
 				
 				// Controls
 				var btn;
 				
-				btn = buttonTemplates.up.cloneNode(true);
-				btn.addEventListener("click", function(){
-					if(k!==0)ctrl.queuemove(k, k-1);
-				});
-				track.childNodes[2].appendChild(btn);
-				
 				btn = buttonTemplates.remove.cloneNode(true);
 				btn.addEventListener("click", function(){
 					ctrl.unqueue(v.playlist_id, v.id);
 				});
-				track.childNodes[2].appendChild(btn);
+				track.childNodes[3].appendChild(btn);
 				
 				// Album
-				track.childNodes[3].title = v.album;
-				track.childNodes[3].firstChild.data = v.album;
+				track.childNodes[4].title = v.album;
+				track.childNodes[4].firstChild.data = v.album;
 				
 				// Artist
-				track.childNodes[4].title = v.artist;
-				track.childNodes[4].firstChild.data = v.artist;
+				track.childNodes[5].title = v.artist;
+				track.childNodes[5].firstChild.data = v.artist;
 				
 				// Duration
-				track.childNodes[5].firstChild.data = time(v.duration);
+				track.childNodes[6].firstChild.data = time(v.duration);
 				
 				// Rating
 				if(!conf.hideRatings){
@@ -1108,6 +1108,19 @@ function Ihm(ctrl, configTables){
 			});
 			
 			document.getElementById("main").appendChild(tracks);
+			
+			var dummyEl = document.createElement("div");
+			Sortable.create(tracks, {
+				handle:".drag",
+				scroll:false,
+				setData:function(dataTransfer, el){
+					dataTransfer.setData("x-data", "");
+					dataTransfer.setDragImage(dummyEl, 0, 0);
+				},
+				onEnd:function(e){
+					if(e.oldIndex !== e.newIndex) ctrl.queuemove(e.oldIndex, e.newIndex);
+				}
+			});
 		}
 		$.scrollTo("#main h1");
 	}
@@ -1895,7 +1908,7 @@ function Ctrl(){
 		},
 		eqaulizers:[31, 63, 87, 125, 175, 250, 350, 500, 700, "1k", "1.4k", "2k", "2.8k", "4k", "5.6k", "8k", "11.2k", "16k"]
 	};
-	var itfIhm = {}, public = {};
+	var itfIhm = {}, ctrl = {};
 	
 	var TRACK_FIELDS = ["channels", "path", "extension", "filename", "arating", "folder", "creationdate", "creationtime", "disc", "track", "modificationdate", "modificationtime", "samplerate"],
 		PLAYLIST_FIELDS = ["id", "title", "artist", "album", "duration", "track", "disc", "path", "rating", "arating", "folder", "channels", "filename", "extension", "bitrate", "channels", "samplerate"],
@@ -1909,12 +1922,12 @@ function Ctrl(){
 	function noop(){}
 	
 	var i18nLoaded = false;
-	public.i18n = function(messages){
+	ctrl.i18n = function(messages){
 		ihm.i18n(messages);
 		i18nLoaded = true;
 	};
 	
-	public.init = function(){
+	ctrl.init = function(){
 		var i;
 		if(!i18nLoaded){
 			localStorage.removeItem("lang");
@@ -1961,7 +1974,7 @@ function Ctrl(){
 		wrk.loadQueueMapped(ihm.loadQueue,null,QUEUE_FIELDS);
 	}
 	
-	public.play = itfIhm.play = function(playlist_id, track_id){
+	ctrl.play = itfIhm.play = function(playlist_id, track_id){
 		wrk.play(noop,null,playlist_id, track_id);
 		wrk.position.forceUpdate();
 	};
@@ -1990,13 +2003,13 @@ function Ctrl(){
 		wrk.position.forceUpdate();
 	};
 	
-	public.queue = itfIhm.queue = function(playlist_id, track_id){
+	ctrl.queue = itfIhm.queue = function(playlist_id, track_id){
 		wrk.queue(reloadQueue, null, playlist_id, track_id);
 	};
-	public.unqueue = itfIhm.unqueue = function(playlist_id, track_id){
+	ctrl.unqueue = itfIhm.unqueue = function(playlist_id, track_id){
 		wrk.unqueue(reloadQueue, null, playlist_id, track_id);
 	};
-	public.queuemove = itfIhm.queuemove = function(oldpos, newpos){
+	ctrl.queuemove = itfIhm.queuemove = function(oldpos, newpos){
 		wrk.queueMove(reloadQueue, null, oldpos, newpos);
 	};
 	
@@ -2027,7 +2040,7 @@ function Ctrl(){
 		document.location = wrk.getDownloadURL(p, t);
 	};
 	
-	return public;
+	return ctrl;
 }
 
 //var aimp = Wrk("",function(r){console.log(r);},function(f){console.error(f);});
