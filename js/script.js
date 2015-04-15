@@ -711,7 +711,7 @@ function Ihm(ctrl, configTables){
 	var i18n;
 	var conf;
 	var equalizers = {balance:{}, speed:{}, reverb:{}, echo:{}, chorus:{}, flanger:{}, group:{enabled:false, values:[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50]}};
-	var trackTemplate, buttonTemplates, groupTemplate;
+	var trackTemplate, queueTemplate, buttonTemplates, groupTemplate;
 	
 	DEBUG.ctrack = ctrack;
 	DEBUG.playlists = playlists;
@@ -758,7 +758,7 @@ function Ihm(ctrl, configTables){
 			title.className = "title";
 			trackTemplate.appendChild(title);
 
-			var controls = document.createElement("div"), btn;
+			var controls = document.createElement("div");
 			controls.className = "controls";
 			trackTemplate.appendChild(controls);
 
@@ -777,6 +777,39 @@ function Ihm(ctrl, configTables){
 			duration.className = "duration";
 			trackTemplate.appendChild(duration);
 		})();
+		
+		queueTemplate = document.createElement("div");
+		queueTemplate.className = "track found";
+		(function(){
+			var no = document.createElement("div");
+			no.appendChild(document.createTextNode(" "));
+			no.className = "no";
+			queueTemplate.appendChild(no);
+
+			var title = document.createElement("div");
+			title.appendChild(document.createTextNode(" "));
+			title.className = "title";
+			queueTemplate.appendChild(title);
+
+			var controls = document.createElement("div");
+			controls.className = "controls";
+			queueTemplate.appendChild(controls);
+
+			var album = document.createElement("div");
+			album.appendChild(document.createTextNode(" "));
+			album.className = "album";
+			queueTemplate.appendChild(album);
+
+			var artist = document.createElement("div");
+			artist.appendChild(document.createTextNode(" "));
+			artist.className = "artist";
+			queueTemplate.appendChild(artist);
+
+			var duration = document.createElement("div");
+			duration.appendChild(document.createTextNode(" "));
+			duration.className = "duration";
+			queueTemplate.appendChild(duration);
+		})();
 
 		buttonTemplates = {
 			download:(function(){
@@ -788,6 +821,20 @@ function Ihm(ctrl, configTables){
 			queue:(function(){
 				var btn = document.createElement("div");
 				btn.appendChild(document.createTextNode("queue"));
+				btn.className = "control queue";
+				btn.title = i18n.playlists.queueAdd();
+				return btn;
+			})(),
+			remove:(function(){
+				var btn = document.createElement("div");
+				btn.appendChild(document.createTextNode("remove"));
+				btn.className = "control queue";
+				btn.title = i18n.playlists.queueAdd();
+				return btn;
+			})(),
+			up:(function(){
+				var btn = document.createElement("div");
+				btn.appendChild(document.createTextNode("up"));
 				btn.className = "control queue";
 				btn.title = i18n.playlists.queueAdd();
 				return btn;
@@ -998,6 +1045,7 @@ function Ihm(ctrl, configTables){
 	
 	function showQueue(){
 		$("#main .detach").detach();
+		document.getElementById("main").className = "";
 		$("#fixedPanel").addClass("active");
 		tab = 2;
 		$("nav a").removeClass("active");
@@ -1005,24 +1053,67 @@ function Ihm(ctrl, configTables){
 		$("#main").html($("<h1>").text(i18n.nav.queue));
 		if(queue.entries.length === 0) $("<div>").appendTo("#main").addClass("message").addClass("fill").text(i18n.playlists.queueEmpty);
 		else{
+			var tracks = document.createElement("div");
+			tracks.id = "queue";
+			
 			queue.entries.forEach(function(v,k){
-				var t = $("<div>").addClass("track").appendTo("#main");
-				$("<div>").addClass("no").text((k+1)+".").appendTo(t);
-				$("<div>").addClass("title").text(v.title).attr("title",v.title).appendTo(t).click(function(){showPlaylist(v.playlist_id, v.id);});
-				$("<div>").addClass("control").text("remove").attr("title","remove from queue").appendTo(t).click(function(){ctrl.unqueue(v.playlist_id, v.id);});
-				$("<div>").addClass("control").text("up").attr("title","move up").appendTo(t).click(function(){if(k!==0)ctrl.queuemove(k, k-1);});
-				//$("<div>").addClass("control").text("down").attr("title","move down").appendTo(t).click(function(){if(k!==queue.entries.length-1)ctrl.queuemove(k, k+1);});
-				$("<div>").addClass("album").text(v.album).attr("title",v.album).appendTo(t);
-				$("<div>").addClass("artist").text(v.artist).attr("title",v.artist).appendTo(t);
-				$("<div>").addClass("duration").text(time(v.duration)).appendTo(t);
+				var track = queueTemplate.cloneNode(true);
+				
+				// Track number
+				track.childNodes[0].firstChild.data = k+1+".";
+				
+				// Title
+				track.childNodes[1].title = v.title;
+				track.childNodes[1].firstChild.data = v.title;
+				track.childNodes[1].addEventListener("click", function(){
+					showPlaylist(v.playlist_id, v.id);
+				});
+				
+				// Controls
+				var btn;
+				
+				btn = buttonTemplates.up.cloneNode(true);
+				btn.addEventListener("click", function(){
+					if(k!==0)ctrl.queuemove(k, k-1);
+				});
+				track.childNodes[2].appendChild(btn);
+				
+				btn = buttonTemplates.remove.cloneNode(true);
+				btn.addEventListener("click", function(){
+					ctrl.unqueue(v.playlist_id, v.id);
+				});
+				track.childNodes[2].appendChild(btn);
+				
+				// Album
+				track.childNodes[3].title = v.album;
+				track.childNodes[3].firstChild.data = v.album;
+				
+				// Artist
+				track.childNodes[4].title = v.artist;
+				track.childNodes[4].firstChild.data = v.artist;
+				
+				// Duration
+				track.childNodes[5].firstChild.data = time(v.duration);
+				
+				// Rating
+				if(!conf.hideRatings){
+					v.ratingEl = RLib.rating(v.arating, v.rating, function(r){
+						ctrl.setRating(v.playlist_id, v.id, r);
+					});
+					v.ratingEl.el.className += " rating";
+					track.appendChild(v.ratingEl.el);
+				}
+				
+				tracks.appendChild(track);
 			});
-			$("<p>").appendTo("#main").text(" ");
-			$("<p>").appendTo("#main").text(" ");
+			
+			document.getElementById("main").appendChild(tracks);
 		}
 		$.scrollTo("#main h1");
 	}
 	function showPlaylist(playlist_id, track_id){
 		$("#main .detach").detach();
+		document.getElementById("main").className = "";
 		$("#fixedPanel").addClass("active");
 		var ot = tab;
 		tab = 1;
@@ -1490,6 +1581,7 @@ function Ihm(ctrl, configTables){
     
     function showSettings(){
 		$("#main .detach").detach();
+		document.getElementById("main").className = "";
 		$("#fixedPanel").removeClass("active");
 		//var conf = JSON.parse(localStorage.getItem("AimpWebConf") || "{}");
 		
@@ -1616,6 +1708,7 @@ function Ihm(ctrl, configTables){
 	
 	function showEqualizer(){
 		$("#main .detach").detach();
+		document.getElementById("main").className = "";
 		$("#fixedPanel").removeClass("active");
 		tab = 4;
 		$("nav a").removeClass("active");
@@ -1682,6 +1775,7 @@ function Ihm(ctrl, configTables){
 	
 	function showCredits(){
 		$("#main .detach").detach();
+		document.getElementById("main").className = "";
 		$("#fixedPanel").removeClass("active");
 		tab = 5;
 		$("nav a").removeClass("active");
@@ -1805,7 +1899,7 @@ function Ctrl(){
 	
 	var TRACK_FIELDS = ["channels", "path", "extension", "filename", "arating", "folder", "creationdate", "creationtime", "disc", "track", "modificationdate", "modificationtime", "samplerate"],
 		PLAYLIST_FIELDS = ["id", "title", "artist", "album", "duration", "track", "disc", "path", "rating", "arating", "folder", "channels", "filename", "extension", "bitrate", "channels", "samplerate"],
-		QUEUE_FIELDS = ["id","title","artist","album","duration","playlist_id"];
+		QUEUE_FIELDS = ["id","title","artist","album","duration","playlist_id", "rating", "arating"];
 	
 	var wrk = Wrk("",function(r){console.log(r);},function(f){console.log(f);return true;});
 	var ihm = Ihm(itfIhm, configTables);
@@ -1830,7 +1924,7 @@ function Ctrl(){
 		for(i=1;i<=29;i++)wrk.status(ihm.updateState, null, i); // volume, balance, speed, play state, mute, reverb, echo, chorus, flanger, equalizer_on, 11 = equalizer 1, ..., 28 = equalizer 18, repeat
 		wrk.status(ihm.updateState, null, 41); // shuffle
 		wrk.status(function(r){
-			wrk.position.setState(["stopped", "playing", "paused"][r]);
+			wrk.position.setState(["stopped", "playing", "paused"][r.value]);
 		}, null, 4);
 		wrk.playlists(ihm.updatePlaylists,null,["id","title","crc32"]);
 		itfIhm.loadCurrTrack();

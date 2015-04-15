@@ -307,6 +307,7 @@ nav a.active.playing{
 #searchbar{
 	display:flex;
 	background: #EEE;
+	margin-right: 10px;
 }
 
 #searchbar input{
@@ -330,10 +331,9 @@ nav a.active.playing{
 	min-width: 16px;
 	text-align: center;
 	padding: 2px;
-	margin:0 10px 0 0;
 }
 
-#main.search .group h2{
+#main.search .group h2, #main.search .sorts, #main.search .groups, #main.search button{
 	display:none;
 }
 
@@ -608,7 +608,7 @@ nav a.active.playing{
 	font-family: icons;
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
-	font-size: 28px;
+	font-size: 20px;
 	padding:0 6px;
 	cursor: pointer;
 	flex-shrink:0;
@@ -762,45 +762,65 @@ nav a.active.playing{
 }
 @media (max-width:499px){
 	.track{
-		padding:5px 50px 5px 10px;
-		height: 50px;
+		padding:0;
+		height: 60px;
 		position: relative;
 		display:block;
 	}
 	
-	.track .no, .track .album, .track .duration, .track .rating{
+	.track .no, .track .album{
 		display: none;
 	}
 	
-	.track .title, .track .artist{
-		display:block;
-		max-width:none;
-		width:auto;
-	}
-	
-	.track .control{
+	.track > div{
 		position: absolute;
-		top:10px;
-		height:20px;
-		width:20px;
+		display: block;
+		max-width: none;
+		width: inherit !important;
+		height: 25px;
+	}
+	
+	.track .title, .track .duration{
+		top: 5px;
+	}
+	.track .artist, .track .rating{
+		top: 30px;
+	}
+	
+	.track .title{
+		left:10px;
+		right:100px;
+	}
+	.track .duration{
+		width:40px !important;
+		right:60px;
+	}
+	
+	.track .artist{
+		left:10px;
+		right:150px;
+	}
+	.track .rating{
+		width:90px !important;
+		right:60px;
+	}
+	
+	.track .controls{
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		height: 50px;
+		width: 50px !important;
 		font-size: 20px;
-		border-left:solid 3px #000;
-		padding:10px;
+		-background: #EEE;
+		margin: 0;
+		-border-left:solid 3px #000;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
 	}
 	
-	.track .control{
-		right:-10px;
-	}
-	
-	.track .control ~ .control{
-		right:35px;
-	}
-	
-	.track .duration:before{
-		content:" (";
-	}
-	
-	.track .duration:after{
-		content:")";
+	.track .controls .control{
+		margin:0;
 	}
 }
