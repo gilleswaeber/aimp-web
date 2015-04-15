@@ -203,6 +203,7 @@ var RLib = (function(){
 		}
 		
 		function update(){
+			//DEBUG.cv = cv;
 			if(Math.abs(el.get(0).offsetWidth - values.length*cw/2) > 2 || Math.abs(el.get(0).offsetHeight - max*ch/2) > 2){
 				cw = el.get(0).offsetWidth/values.length*2;
 				ch = el.get(0).offsetHeight/max*2;

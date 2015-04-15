@@ -698,9 +698,6 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 }
 
 function Ihm(ctrl, configTables){
-	function comparePlaylistsEl(a,b){
-		return (a.dataset.title > b.dataset.title) ? 1 : -1;
-	}
 	
 	var public = {};
 	var ctrack = {id:0, pls:0, dur:0, title:"", artist:"", album:"", cover:""};
@@ -719,12 +716,37 @@ function Ihm(ctrl, configTables){
 	DEBUG.ctrack = ctrack;
 	DEBUG.playlists = playlists;
 	
+	function searchPrepare(t){
+		return " "+_.uniq(_.without(t.toLowerCase().split(/[ .,:?!()]+/).sort(), ""), true).join(" ");
+	}
+	/**
+	 * 
+	 * @param {string} needle
+	 * @param {[[search:(string)],]} haystack contains prepared search key
+	 * @param {[(int),]} prefilter [opt] search only in specified keys
+	 * @returns {undefined}
+	 */
+	function searchTest(needle, haystack, prefilter){
+		var results = prefilter ? prefilter.slice() : _.range(0, haystack.length-1);
+		needle = _.uniq(_.without(needle.toLowerCase().split(/[ .,:?!()]+/).sort(), ""), true);
+		if(needle.length === 0)return results;
+		needle = new RegExp(" "+needle.join(".* "));
+		for(var i=0; i<results.length; i++){
+			if(!needle.test(haystack[results[i]].search))results[i]=null;
+		}
+		return _.without(results, null);
+	}
+	
+	function comparePlaylistsEl(a,b){
+		return (a.dataset.title > b.dataset.title) ? 1 : -1;
+	}
+	
 	public.i18n = function(messages){
 		i18n = messages;
 
 		// DOM templates
 		trackTemplate = document.createElement("div");
-		trackTemplate.className = "track";
+		trackTemplate.className = "track found";
 		(function(){
 			var no = document.createElement("div");
 			no.appendChild(document.createTextNode(" "));
@@ -812,6 +834,10 @@ function Ihm(ctrl, configTables){
 		});
 		$("#fbmenu").click(function(){
 			$.scrollTo("nav", {duration:500});
+		});
+		$("#fbsearch").click(function(){
+			$.scrollTo("#main h1", {duration:500});
+			setTimeout(function(){$("#searchbar input").focus();},500);
 		});
 		
 		timebar = RLib.hslider("#timebar", function(pos){ctrl.setStatus(31, Math.round(pos/1000));}, time);
@@ -1010,7 +1036,48 @@ function Ihm(ctrl, configTables){
 		}else{
 			var bench = [new Date().getTime()], m = $("#main"), dm = m.get(0), playlist_hash = playlists[playlist_id].title.hashCode();
 			
-			m.html($("<h1>").text(playlists[playlist_id].title));
+			var tracks, tracksEl = [];
+			
+			var searchFx = (function(){
+				var cache = {};
+				var last = "";
+				
+				return function(e){
+					if(!cache[""]) cache[""] = tracks.slice();
+					if(e && e.keyCode === 27) this.value="";
+					if (this.value.length > 0) {
+						$("#main").addClass("search");
+						if(!cache[this.value])cache[this.value] = searchTest(this.value, playlists[playlist_id].tracks, (last===this.value.substr(0,last.length)?cache[last]:tracks));
+						
+						_.difference(cache[this.value], cache[last]).forEach(function(i){ // new search results
+							tracksEl[i].classList.add("found");
+						});
+						_.difference(cache[last], cache[this.value]).forEach(function(i){ // old search results
+							tracksEl[i].classList.remove("found");
+						});
+						
+						last = this.value;
+					} else {
+						$("#main").removeClass("search");
+						_.difference(cache[this.value], cache[last]).forEach(function(i){ // new search results
+							tracksEl[i].classList.add("found");
+						});
+						last = this.value;
+					}
+				};
+			})();
+			m.html($("<h1>").append(
+				$("<span>").text(playlists[playlist_id].title)
+			).append(
+				$('<div id="searchbar">').append(
+					$("<input>").keyup(searchFx).change(searchFx).attr("placeholder", i18n.playlists.search()+"…")
+				).append(
+					$('<div>').text("no").click(function(){
+						this.previousSibling.value = "";
+						searchFx.call(this.previousSibling);
+					})
+				)
+			));
 			var group = $("<div>").appendTo(m).text(i18n.playlists.groupBy).addClass("groups");
 			var sort = $("<div>").appendTo(m).text(i18n.playlists.sortBy).addClass("sorts");
 			
@@ -1056,7 +1123,7 @@ function Ihm(ctrl, configTables){
 				});
 			});
 			
-			var psort = grouped, tracks;
+			var psort = grouped;
 			psort = psort.concat(sorted);
 						
 			if(psort.length === 0) tracks = _.range(playlists[playlist_id].tracks.length);
@@ -1169,6 +1236,8 @@ function Ihm(ctrl, configTables){
 				}
 				
 				var track = trackTemplate.cloneNode(true);
+				tracksEl[i] = track;
+				
 				if(playlist_id === ctrack.pls && v.id === ctrack.id) track.className += " active";
 				if(queue.map[playlist_id] && queue.map[playlist_id][v.id]) track.className += " queued";
 				track.dataset.id = v.id;
@@ -1320,7 +1389,8 @@ function Ihm(ctrl, configTables){
 			playlists[p.playlist_id].cacheD = false;
 			o.entries.forEach(function(v,k){
 				playlists[p.playlist_id].tmap[v.id]=k;
-				if(p.playlist_id === ctrack.pls && v.id === ctrack.id)public.showTrack(v);
+				playlists[p.playlist_id].tracks[k].search = searchPrepare(v.title+" "+v.artist+" "+v.album);
+				if(p.playlist_id === ctrack.pls && v.id === ctrack.id) public.showTrack(v);
 			});
 			if(tab === 1 && tabpls === p.playlist_id)showPlaylist(p.playlist_id);
 		}
@@ -1617,12 +1687,12 @@ function Ihm(ctrl, configTables){
 		$("nav a").removeClass("active");
 		$("nav a[data-lnk=\"credits\"]").addClass("active");
 		var m = $("#main").html($("<h1>").text(i18n.credits.h));
-		$("<p>").appendTo(m).text(i18n.credits.dev({dev:"romlig"})+" [").append($("<a>").attr("href","http://romlig.ch").text("romlig.ch")).append("]");
+		$("<p>").appendTo(m).text(i18n.credits.dev({dev:"Gilles Waeber"})+" [").append($("<a>").attr("href","http://gilleswaeber.ch").text("gilleswaeber.ch")).append("]");
 		$("<h2>").appendTo(m).text(i18n.credits.ressources);
 		$("<p>").appendTo(m).text(i18n.credits.appUsing({what:"Entypo icons",who:"Daniel Bruce"})+" [").append($("<a>").attr("href","http://www.entypo.com").text("www.entypo.com")).append("]");
 		$("<p>").appendTo(m).text(i18n.credits.aimp()+" [").append($("<a>").attr("href","http://www.aimp.ru").text("www.aimp.ru")).append("] [").append($("<a>").attr("href","https://github.com/a0ivanov/aimp-control-plugin").text("github.com/a0ivanov")).append("]");
 		$("<h2>").appendTo(m).text(i18n.credits.translations);
-		$("<p>").appendTo(m).text("French & english translations by romlig");
+		$("<p>").appendTo(m).text("French & english translations by Gilles Waeber");
 		
 		$("<p>").appendTo(m).text(" ");
 		$.scrollTo("#main h1");
@@ -1634,12 +1704,12 @@ function Ihm(ctrl, configTables){
 			"nav a.active.playing{ border-color:" +skin.background+";}"+
 			"nav a.active, .checkbox.active, .rlib_tip{ color:" +skin.background+";}"+
 			
-			"#songblock, #timebar, #controlbuttons #volumebar, .rlib_slider, .checkbox, .eqMSlider{ background: "+skin.background2+";}"+
+			"#songblock, #timebar, #controlbuttons #volumebar, .rlib_slider, .checkbox, .eqMSlider, #searchbar{ background: "+skin.background2+";}"+
 			"#main .group h2{ border-color: "+skin.background2+";}"+
 			
 			".skins > div, header, nav, #main button, #fixedPanel, .track .control{ border-color:"+skin.foreground+";}"+
 			".rlib_limit, .rlib_tip{ background:"+skin.foreground+";}"+
-			"body, #main button{ color:"+skin.foreground+";}"+
+			"body, #main button, #searchbar input{ color:"+skin.foreground+";}"+
 			
 			"nav a.active, .rlib_hfilled, .checkbox.active{ background:" +skin.accent+";}"+
 			"#cover.nocover, #controlbuttons div.active, .track.queued .control.queue, a:link, a:visited, .groups .active, .sorts .active, #fixedPanel div.active, .rlib_rating.set .star{ color: "+skin.accent+";}"+
@@ -1661,7 +1731,7 @@ function Ctrl(){
 				en:"French", l:"Français", progress:100
 			},
 			ru:{
-				en:"Russian", l:"Русский", progress:48
+				en:"Russian", l:"Русский", progress:51
 			}
 		},
 		skins:{
@@ -1700,7 +1770,7 @@ function Ctrl(){
 			fullYellow:{background:"#332", background2:"#553", foreground:"#DDD", accent:"#DD0"},
 			fullPurple:{background:"#303", background2:"#505", foreground:"#DDD", accent:"#D0D"},
 			
-			aimp:{background:"#444", background2:"#333", foreground:"#FFF", accent:"#F91"},
+			aimp:{background:"#444", background2:"#333", foreground:"#EEE", accent:"#F91"},
 			purpleYellow:{background:"#303", background2:"#505", foreground:"#DDD", accent:"#DD0"},
 			blueYellow:{background:"#003", background2:"#005", foreground:"#DDD", accent:"#DD0"},
 			blueOrange:{background:"#003", background2:"#005", foreground:"#DDD", accent:"#F62"},
@@ -1727,7 +1797,7 @@ function Ctrl(){
 			soft			:[63,58,52,51,44,40,43,45,51,56,65,70,73,74,77,77,77,77],
 			softRock		:[55,56,56,56,52,49,45,40,35,36,35,36,36,43,50,58,68,77],
 			vocal			:[33,35,36,43,49,54,55,61,71,80,73,65,58,50,47,43,40,40],
-			sinus			:[50,62,69,75,76,76,74,63,35,26,22,20,24,34,54,70,78,80]
+			sinus			:[44,54,63,69,72,73,66,55,39,31,25,27,31,42,54,65,72,78]
 		},
 		eqaulizers:[31, 63, 87, 125, 175, 250, 350, 500, 700, "1k", "1.4k", "2k", "2.8k", "4k", "5.6k", "8k", "11.2k", "16k"]
 	};
@@ -1759,6 +1829,9 @@ function Ctrl(){
 		ihm.init();
 		for(i=1;i<=29;i++)wrk.status(ihm.updateState, null, i); // volume, balance, speed, play state, mute, reverb, echo, chorus, flanger, equalizer_on, 11 = equalizer 1, ..., 28 = equalizer 18, repeat
 		wrk.status(ihm.updateState, null, 41); // shuffle
+		wrk.status(function(r){
+			wrk.position.setState(["stopped", "playing", "paused"][r]);
+		}, null, 4);
 		wrk.playlists(ihm.updatePlaylists,null,["id","title","crc32"]);
 		itfIhm.loadCurrTrack();
 		itfIhm.loadCover();

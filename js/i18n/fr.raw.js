@@ -38,6 +38,7 @@ raw =
 		groupBy:"Grouper par : ",
 		foldAll:"Tout replier",
 		unfoldAll:"Tout déplier",
+		search:"Rechercher",
 	},
 	settings:{
 		h:"Configuration",
