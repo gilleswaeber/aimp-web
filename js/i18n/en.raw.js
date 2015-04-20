@@ -18,6 +18,7 @@ raw =
 		queue:"Queue",
 		settings:"Settings",
 		equalizer:"Equalizer",
+		scheduler:"Scheduler",
 		credits:"Credits",
 		help:"Help",
 	},
@@ -109,6 +110,9 @@ raw =
 		psoftRock:"Soft Rock",
 		pvocal:"Vocal",
 		psinus:"Sinus wave",
+	},
+	scheduler:{
+		na:"You must enable the scheduler in the Control Plugin settings.",
 	},
 	credits:{
 		h:"Credits",

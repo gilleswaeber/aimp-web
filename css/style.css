@@ -7,8 +7,39 @@
 		url('fonts/icons/icomoon.woff') format('woff'),
 		url('fonts/icons/icomoon.ttf') format('truetype'),
 		url('fonts/icons/icomoon.svg') format('svg');
-	font-weight: normal;
-	font-style: normal;
+}
+
+@font-face{
+	font-family: body;
+	src:local("Segoe UI Semilight"),
+		url('fonts/opensans/opensans-light.eot') format('embedded-opentype'),
+		url('fonts/opensans/opensans-light.woff') format('woff'),
+		url('fonts/opensans/opensans-light.ttf') format('truetype');
+	font-weight: 200;
+}
+@font-face{
+	font-family: body;
+	src:local("Segoe UI"),
+		url('fonts/opensans/opensans-regular.eot') format('embedded-opentype'),
+		url('fonts/opensans/opensans-regular.woff') format('woff'),
+		url('fonts/opensans/opensans-regular.ttf') format('truetype');
+	font-weight: 400;
+}
+@font-face{
+	font-family: body;
+	src:local("Segoe UI Semibold"),
+		url('fonts/opensans/opensans-semibold.eot') format('embedded-opentype'),
+		url('fonts/opensans/opensans-semibold.woff') format('woff'),
+		url('fonts/opensans/opensans-semibold.ttf') format('truetype');
+	font-weight: 600;
+}
+@font-face{
+	font-family: body;
+	src:local("Segoe UI Bold"),
+		url('fonts/opensans/opensans-bold.eot') format('embedded-opentype'),
+		url('fonts/opensans/opensans-bold.woff') format('woff'),
+		url('fonts/opensans/opensans-bold.ttf') format('truetype');
+	font-weight: 800;
 }
 
 html, body{
@@ -19,7 +50,7 @@ body{
 	padding:0;
 	margin:0;
 	height:100vh;
-	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	font-family: body;
 	overflow-y:scroll;
 	min-width: 320px;
 	color:#000;
@@ -43,7 +74,7 @@ body{
 
 a:link, a:visited{
 	color:#484;
-	font-weight: bold;
+	font-weight: 600;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -185,7 +216,7 @@ header{
 }
 #controlbuttons #volume{
 	cursor: default;
-	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	font-family: body;
 	margin-left: 5px;
 	font-size: 16px;
 	min-width: 35px;
@@ -270,7 +301,7 @@ nav a{
 nav a.active{
 	background: #484;
 	color:#FFF;
-	font-weight: 600;
+	font-weight: 800;
 }
 
 nav a.playing{
@@ -315,7 +346,7 @@ nav a.active.playing{
 	background: transparent;
 	font-size: 16px;
 	font-weight: 400;
-	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	font-family: body;
 	min-width:280px;
 	padding: 0 3px;
 	flex-grow: 1;
@@ -367,7 +398,7 @@ nav a.active.playing{
 	padding:0 10px;
 }
 
-#main .message.fill{
+#main .fill{
 	min-height:50vh;
 }
 
@@ -382,11 +413,11 @@ nav a.active.playing{
 
 .groups > span, .sorts > span{
 	margin-right: 5px;
-	font-weight: normal;
+	font-weight: 400;
 }
 
 .groups .active, .sorts .active{
-	font-weight: 700;
+	font-weight: 800;
 	color: #484;
 }
 
@@ -400,7 +431,7 @@ nav a.active.playing{
 	display: inline-block;
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
-	font-weight: normal;
+	font-weight: 400;
 }
 
 .group h2{
@@ -420,7 +451,7 @@ nav a.active.playing{
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
 	margin-right: 5px;
-	font-weight: normal;
+	font-weight: 400;
 }
 
 #main:not(.search) .group.folded .track,  #main.search .track:not(.found){
@@ -475,7 +506,7 @@ nav a.active.playing{
 	cursor: pointer;
 	font-family: icons;
 	margin-right: 20px;
-	font-weight: normal;
+	font-weight: 400;
 	font-size:20px;
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
@@ -498,7 +529,7 @@ nav a.active.playing{
 }
 
 .track.active{
-	font-weight: 900;
+	font-weight: 800;
 }
 
 .track.queued .control.queue{
@@ -530,7 +561,7 @@ nav a.active.playing{
 }
 
 .langs > div.active{
-	font-weight: 900;
+	font-weight: 600;
 }
 
 .skins{
@@ -580,7 +611,7 @@ nav a.active.playing{
 }
 .checkbox.active{
 	background: #484;
-	font-weight: bold;
+	font-weight: 600;
 	color: #FFF;
 }
 .checkbox.active:before{
@@ -594,12 +625,12 @@ nav a.active.playing{
 	margin:0 0 10px 10px;
 	display: inline-block;
 	position: relative;
-	font-weight: bold;
+	font-weight: 600;
 	padding:1px 5px;
 	cursor: pointer;
 	border: solid 3px #000;
 	font-size: 14px;
-	font-family: "Segoe UI", Verdana, Arial, sans-serif;
+	font-family: body;
 	background: #FFF;
 	color: #000;
 }
@@ -688,7 +719,7 @@ nav a.active.playing{
 .rlib_rating .star{
 	display:inline-block;
 	cursor: pointer;
-	font-weight: normal;
+	font-weight: 400;
 }
 
 .rlib_rating .star:not(.active){

@@ -622,7 +622,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 * @param {function(error,params,method)} errorCallback
 	 */	
 	wrk.version = function(successCallback, errorCallback){
-		call("Version", successCallback, errorCallback);
+		call("Version", {}, successCallback, errorCallback);
 	};
 	
 	/**
@@ -632,7 +632,46 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 * @param {function(error,params,method)} errorCallback
 	 */
 	wrk.pluginCapabilities = function(successCallback, errorCallback){
-		call("PluginCapabilities", successCallback, errorCallback);		
+		call("PluginCapabilities", {}, successCallback, errorCallback);		
+	};
+	
+	/**
+	 * Get Control Plugin scheduler datas.<br>
+	 * Allows to schedule some action. Similar to scheduler of AIMP player.<br>
+	 * <b>This is not the AIMP scheduler</b>
+	 * Result : {supported_actions:["stop_playback","pause_playback","machine_shutdown","machine_sleep","machine_hibernate"?], current_timer:{action:(string), expires_at:(float), expires_in:(float)}?}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(result,params,method)} errorCallback
+	 */
+	wrk.getScheduler = function(successCallback, errorCallback){
+		call("Scheduler", {}, successCallback, errorCallback);
+	};
+	/**
+	 * Cancel Control Plugin scheduler.<br>
+	 * Allows to schedule some action. Similar to scheduler of AIMP player.<br>
+	 * <b>This is not the AIMP scheduler</b>
+	 * Result : {supported_actions:["stop_playback","pause_playback","machine_shutdown","machine_sleep","machine_hibernate"?]}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(result,params,method)} errorCallback
+	 */
+	wrk.cancelScheduler = function(successCallback, errorCallback){
+		call("Scheduler", {cancel:true}, successCallback, errorCallback);
+	};
+	/**
+	 * Set Control Plugin scheduler.<br>
+	 * Allows to schedule some action. Similar to scheduler of AIMP player.<br>
+	 * <b>This is not the AIMP scheduler</b>
+	 * Result : {supported_actions:["stop_playback","pause_playback","machine_shutdown","machine_sleep","machine_hibernate"?], current_timer:{action:(string), expires_at:(float), expires_in:(float)}}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(result,params,method)} errorCallback
+	 * @param {string} action "machine_shutdown"|"machine_sleep"|"machine_hibernate"?(If supported by machine.)|"stop_playback"|"pause_playback"
+	 * @param {string} timeMode "time"(set expiration time in Unix time)|"delay"(set expiration time with a delay)
+	 * @param {float} expiration expiration, in seconds
+	 */
+	wrk.setScheduler = function(successCallback, errorCallback, action, timeMode, expiration){
+		var p = {action:action};
+		p["expiration_"+timeMode] = expiration+1e-5;
+		call("Scheduler", p, successCallback, errorCallback);
 	};
 	
 	var position = {auto:false, listeners:[], tickInterval:200, checkInterval:30000, speed:1, lastTicker:-1, lastUpdater:-1, lastUpdate:-1, lastPos:0, state:"playing",
@@ -702,7 +741,7 @@ function Ihm(ctrl, configTables){
 	
 	var public = {};
 	var ctrack = {id:0, pls:0, dur:0, title:"", artist:"", album:"", cover:""};
-	var tab = 0; // 0 = home, 1 = playlists, 2 = queue, 3 = settings, 4 = equalizer, 5 = credits
+	var tab = 0; // 0 = home, 1 = playlists, 2 = queue, 3 = settings, 4 = equalizer, 5 = credits, 6 = scheduler
 	var tabpls = 0;
 	var tabplstr;
 	var playlists = {};
@@ -711,11 +750,13 @@ function Ihm(ctrl, configTables){
 	var volumebar;
 	var i18n;
 	var conf;
+	var system = {};
 	var equalizers = {balance:{}, speed:{}, reverb:{}, echo:{}, chorus:{}, flanger:{}, group:{enabled:false, values:[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50]}};
 	var trackTemplate, queueTemplate, buttonTemplates, groupTemplate;
 	
 	DEBUG.ctrack = ctrack;
 	DEBUG.playlists = playlists;
+	DEBUG.system = system;
 	
 	function searchPrepare(t){
 		return " "+_.uniq(_.without(t.toLowerCase().split(/[ .,:?!()]+/).sort(), ""), true).join(" ");
@@ -877,6 +918,7 @@ function Ihm(ctrl, configTables){
 		$('nav h2[data-h="settings"]').text(i18n.nav.settings);
 		$('nav a[data-lnk="settings"]').click(showSettings).text(i18n.nav.settings);
 		$('nav a[data-lnk="equalizer"]').click(showEqualizer).text(i18n.nav.equalizer);
+		$('nav a[data-lnk="scheduler"]').click(showScheduler).text(i18n.nav.scheduler);
 		$('nav a[data-lnk="credits"]').click(showCredits).text(i18n.nav.credits);
 		$('nav a[data-lnk="fullscreen"]').click(function(){toolkit.toggleFullScreen();}).text(i18n.generic.fullscreen);
 		$("#title").click(function(){
@@ -1065,6 +1107,10 @@ function Ihm(ctrl, configTables){
 			queue.entries.forEach(function(v,k){
 				var track = queueTemplate.cloneNode(true);
 				
+				track.childNodes[0].addEventListener("click", function(){
+					console.log(k);
+				});
+				
 				// Track number
 				track.childNodes[1].firstChild.data = k+1+".";
 				
@@ -1118,7 +1164,7 @@ function Ihm(ctrl, configTables){
 					dataTransfer.setDragImage(dummyEl, 0, 0);
 				},
 				onEnd:function(e){
-					if(e.oldIndex !== e.newIndex) ctrl.queuemove(e.oldIndex, e.newIndex);
+					if(typeof e.newIndex !== 'undefined') ctrl.queuemove(e.oldIndex, e.newIndex);
 				}
 			});
 		}
@@ -1402,8 +1448,9 @@ function Ihm(ctrl, configTables){
 			
 			//alert("It took "+(bench[1]-bench[0])+"ms to sort and "+(bench[2]-bench[1])+"ms to show.");
 			
-			$("<p>").appendTo("#main").text(" ");
-			$("<p>").appendTo("#main").text(" ");
+			var filler = $("<p>").appendTo("#main").text(" ");
+			if(grouped.length > 0) filler.addClass("fill");
+			
 			if(track_id || tabplstr){
 				scrollToTrack(track_id || tabplstr);
 				track_id = null;
@@ -1786,6 +1833,20 @@ function Ihm(ctrl, configTables){
 		$.scrollTo("#main h1");
 	}
 	
+	function showScheduler(){
+		if(!system.scheduler){
+			alert(i18n.scheduler.na());
+		}else{
+			$("#main .detach").detach();
+			document.getElementById("main").className = "";
+			$("#fixedPanel").removeClass("active");
+			tab = 6;
+			$("nav a").removeClass("active");
+			$("nav a[data-lnk=\"scheduler\"]").addClass("active");
+			var m = $("#main").html($("<h1>").text(i18n.nav.scheduler));
+		}
+	}
+	
 	function showCredits(){
 		$("#main .detach").detach();
 		document.getElementById("main").className = "";
@@ -1824,6 +1885,16 @@ function Ihm(ctrl, configTables){
 		"</style>").appendTo("head");
 		equalizers.group.s.setColors(skin.foreground, skin.accent);
 	}
+	
+	public.loadVersion = function(v){
+		system.aimp_version = v.aimp_version;
+		system.plugin_version = v.plugin_version;
+	};
+	public.loadCapabilities = function(c){
+		system.physical_track_deletion = c.physical_track_deletion;
+		system.scheduler = c.scheduler;
+		system.upload_track = c.upload_track;
+	};
 	
 	return public;
 }
@@ -1948,6 +2019,8 @@ function Ctrl(){
 		wrk.subscribe.controlPanelState(controlPanelEvent);
 		wrk.subscribe.track(trackEvent);
 		wrk.subscribe.playlists(playlistEvent);
+		wrk.version(ihm.loadVersion);
+		wrk.pluginCapabilities(ihm.loadCapabilities);
 	};
 	
 	function controlPanelEvent(r){
