@@ -18,9 +18,9 @@ raw =
 		queue:"Queue",
 		settings:"Settings",
 		equalizer:"Equalizer",
-		scheduler:"Scheduler",
 		credits:"Credits",
 		help:"Help",
+		errors:"Errors",
 	},
 	playlists:{
 		title:"Title",
@@ -35,6 +35,7 @@ raw =
 		moveDown:"Move down",
 		moveUp:"Move up",
 		queueEmpty:"Queue is empty !",
+		queueClear:"Clear the queue",
 		sortBy:"Sort by: ",
 		groupBy:"Group by: ",
 		foldAll:"Collapse all",
@@ -42,8 +43,6 @@ raw =
 		search:"Search",
 	},
 	settings:{
-		h:"Settings",
-		
 		lang:"Languages",
 		langT:"Here are the different available languages.",
 		completion:"{p}% complete",
@@ -74,7 +73,6 @@ raw =
 		notSupported:"This feature is not supported in your browser. "
 	},
 	equalizer:{
-		h:"Equalizer",
 		refreshT:"These settings can not be refreshed dynamically.",
 		refresh:"Refresh",
 		
@@ -111,16 +109,21 @@ raw =
 		pvocal:"Vocal",
 		psinus:"Sinus wave",
 	},
-	scheduler:{
-		na:"You must enable the scheduler in the Control Plugin settings.",
-	},
 	credits:{
-		h:"Credits",
 		dev:"Developped and designed by {dev}",
 		ressources:"Ressources",
 		appUsing:"This app is using {what} by {who}.",
 		aimp:"This app requires the AIMP player and the AIMP control plugin.",
 		translations:"Translations",
+	},
+	errors:{
+		errorsEmpty:"There are no errors.",
+		retry:"Retry",
+		retryIn:"Retry in {s} seconds",
+		reconnect:"Reconnect",
+		eServer:"Failed to connect to the server.",
+		debugMode:"Enable debug mode.",
+		log:"Error log",
 	},
 	generic:{
 		loading:"Loading...",

@@ -290,7 +290,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 			r = r.formatted_string.split("\u001e");
 				
 			fields.forEach(function(n,i){
-				ret[n] = r[i];
+				if(!ret[n])ret[n] = r[i];
 			});
 			
 			if(!r1){
@@ -552,6 +552,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 * @param {int} height [opt]
 	 */
 	wrk.cover = function(successCallback, errorCallback, playlist_id, track_id, width, height){
+		successCallback = successCallback || defSuccessCallback;
 		var params = {playlist_id:playlist_id, track_id:track_id};
 		if(typeof width !== "undefined") params.cover_width = width;
 		if(typeof height !== "undefined") params.cover_height = height;
@@ -633,6 +634,19 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	 */
 	wrk.pluginCapabilities = function(successCallback, errorCallback){
 		call("PluginCapabilities", {}, successCallback, errorCallback);		
+	};
+	
+	/**
+	 * Adds URL to specified playlist.<br>
+	 * Result (success) : {}
+	 * Result (error) : {error:{code:(int),message:(string)}}
+	 * @param {function(result,params,method)} successCallback
+	 * @param {function(error,params,method)} errorCallback
+	 * @param {int} playlist_id
+	 * @param {string} url
+	 */
+	wrk.addURLToPlaylist = function(successCallback, errorCallback, playlist_id, url){
+		call("AddURLToPlaylist", {playlist_id:playlist_id, url:url}, successCallback, errorCallback);
 	};
 	
 	/**
@@ -741,11 +755,11 @@ function Ihm(ctrl, configTables){
 	
 	var public = {};
 	var ctrack = {id:0, pls:0, dur:0, title:"", artist:"", album:"", cover:""};
-	var tab = 0; // 0 = home, 1 = playlists, 2 = queue, 3 = settings, 4 = equalizer, 5 = credits, 6 = scheduler
+	var tab = 0; // 0 = home, 1 = playlists, 2 = queue, 3 = settings, 4 = equalizer, 5 = credits, 6 = scheduler, 7 = errors
 	var tabpls = 0;
 	var tabplstr;
 	var playlists = {};
-	var queue = {entries:[], map:{}};
+	var queue = {entries:[], map:{}}, queueMoving = false;
 	var timebar;
 	var volumebar;
 	var i18n;
@@ -753,6 +767,7 @@ function Ihm(ctrl, configTables){
 	var system = {};
 	var equalizers = {balance:{}, speed:{}, reverb:{}, echo:{}, chorus:{}, flanger:{}, group:{enabled:false, values:[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50]}};
 	var trackTemplate, queueTemplate, buttonTemplates, groupTemplate;
+	var popup;
 	
 	DEBUG.ctrack = ctrack;
 	DEBUG.playlists = playlists;
@@ -824,7 +839,6 @@ function Ihm(ctrl, configTables){
 		queueTemplate.className = "track found";
 		(function(){
 			var drag = document.createElement("div");
-			drag.appendChild(document.createTextNode("menu"));
 			drag.className = "drag";
 			queueTemplate.appendChild(drag);
 			
@@ -895,10 +909,10 @@ function Ihm(ctrl, configTables){
 			var df = document.createDocumentFragment();
 			df.appendChild(document.createElement("span"));
 			df.appendChild(document.createElement("div"));
-			df.appendChild(document.createElement("div"));
+			//df.appendChild(document.createElement("div"));
 			df.childNodes[0].appendChild(document.createTextNode(" "));
-			df.childNodes[1].appendChild(document.createTextNode("left"));
-			df.childNodes[2].appendChild(document.createTextNode("right"));
+			df.childNodes[1].appendChild(document.createTextNode("queue"));
+			//df.childNodes[2].appendChild(document.createTextNode("right"));
 			return df;
 		})());
 	};
@@ -914,6 +928,7 @@ function Ihm(ctrl, configTables){
 		$("#bvolume").mouseover(function(){setTimeout(function(){$("#controlbuttons").addClass("volume");},10);}).click(function(){if($("#controlbuttons").hasClass("volume"))ctrl.setStatus(5, 1*!$("#bvolume").hasClass("active"));});
 		$("#controls").mouseleave(function(){$("#controlbuttons").removeClass("volume");});
 		$('nav a[data-lnk="queue"]').click(showQueue).text(i18n.nav.queue);
+		$('nav a[data-lnk="errors"]').click(showErrors).text(i18n.nav.errors);
 		$('nav h2[data-h="playlists"]').text(i18n.nav.playlists);
 		$('nav h2[data-h="settings"]').text(i18n.nav.settings);
 		$('nav a[data-lnk="settings"]').click(showSettings).text(i18n.nav.settings);
@@ -926,6 +941,9 @@ function Ihm(ctrl, configTables){
 			else {
 				scrollToTrack(ctrack.id);
 			}
+		});
+		$('#cover').click(function(e){
+			showPopup(ctrack, e);
 		});
 		$("#fbmenu").click(function(){
 			$.scrollTo("nav", {duration:500});
@@ -1007,6 +1025,8 @@ function Ihm(ctrl, configTables){
 			return configTables.eqaulizers[c]+"Hz";
 		};
 		equalizers.group.s = RLib.vmslider(equalizers.group.e = $("<div>").addClass("eqMSlider"), equalizers.group.values, 100, 50, 10, equalizers.group.vfx, equalizers.group.cfx, function(c,v){ctrl.setStatus(11+c, Math.round(v));equalizers.group.s.set(c, Math.round(v));}, "#000", "#484");
+		
+		popup = $('<div id="popup">').appendTo(document.body).text("thisisapopup");
 		
 		if(conf.skin && configTables.skins[conf.skin])applySkin(configTables.skins[conf.skin]);
 	};
@@ -1091,6 +1111,16 @@ function Ihm(ctrl, configTables){
 		}
 	};
 	
+	function queueMove(position){
+		if(queueMoving === false){
+			queueMoving = position;
+			$("#main").addClass("queuemove");
+			$($("#queue .track")[position]).addClass("moved");
+		}else{
+			if(position == queueMoving) ctrl.queuemove(queueMoving, 0);
+			else ctrl.queuemove(queueMoving, position+(position < queueMoving ? 1 : 0));
+		}
+	}
 	function showQueue(){
 		$("#main .detach").detach();
 		document.getElementById("main").className = "";
@@ -1099,16 +1129,23 @@ function Ihm(ctrl, configTables){
 		$("nav a").removeClass("active");
 		$("nav a[data-lnk=\"queue\"]").addClass("active");
 		$("#main").html($("<h1>").text(i18n.nav.queue));
+		
+		queueMoving = false;
 		if(queue.entries.length === 0) $("<div>").appendTo("#main").addClass("message").addClass("fill").text(i18n.playlists.queueEmpty);
 		else{
+			$("#main").append($("<button>").text(i18n.playlists.queueClear).click(function(){
+				toolkit.delayEach(queue.entries, function(v){ctrl.unqueue(v.playlist_id, v.id);}, 50)
+			}));
+			
 			var tracks = document.createElement("div");
 			tracks.id = "queue";
+			var moving = false;
 			
 			queue.entries.forEach(function(v,k){
 				var track = queueTemplate.cloneNode(true);
 				
 				track.childNodes[0].addEventListener("click", function(){
-					console.log(k);
+					queueMove(k);
 				});
 				
 				// Track number
@@ -1172,7 +1209,7 @@ function Ihm(ctrl, configTables){
 	}
 	function showPlaylist(playlist_id, track_id){
 		$("#main .detach").detach();
-		document.getElementById("main").className = "";
+		document.getElementById("main").className = ""+(conf.oneGroup ? 'folders' : '');
 		$("#fixedPanel").addClass("active");
 		var ot = tab;
 		tab = 1;
@@ -1303,13 +1340,13 @@ function Ihm(ctrl, configTables){
 				tracks = playlists[playlist_id].cache;
 			}
 			
-			if(grouped.length > 0){
+			if(grouped.length > 0 && !conf.oneGroup){
 				m.append($("<button>").text(i18n.playlists.foldAll).click(function(){
 					m.find(".group").addClass("folded");
 					conf.sort["g"+playlist_hash] = {default:true};
 					saveConfig();
 				}));
-				if(!conf.oneGroup) m.append($("<button>").text(i18n.playlists.unfoldAll).click(function(){
+				m.append($("<button>").text(i18n.playlists.unfoldAll).click(function(){
 					m.find(".group").removeClass("folded");
 					conf.sort["g"+playlist_hash] = {default:false};
 					saveConfig();
@@ -1349,6 +1386,7 @@ function Ihm(ctrl, configTables){
 								$("#main .group").addClass("folded");
 								conf.sort["g"+playlist_hash] = {default:true};
 								conf.sort["g"+playlist_hash][gid.hashCode()] = false;
+								$("#main").toggleClass("open", !status);								
 							}else{
 								conf.sort["g"+playlist_hash][gid.hashCode()] = status;
 							}
@@ -1356,10 +1394,25 @@ function Ihm(ctrl, configTables){
 							saveConfig();
 						};})(group, gid));
 						group.firstChild.firstChild.firstChild.data = gid;
-						if( conf.sort["g"+playlist_hash][gid.hashCode()] === true || (conf.sort["g"+playlist_hash][gid.hashCode()] !== false) && conf.sort["g"+playlist_hash].default){
+						if( conf.sort["g"+playlist_hash][gid.hashCode()] === true || (conf.sort["g"+playlist_hash][gid.hashCode()] !== false && conf.sort["g"+playlist_hash].default)){
 							group.className += " folded";
 						}
 						group.firstChild.childNodes[1].addEventListener("click", function(e){
+							e.stopPropagation();
+							toolkit.delayEach(this.parentNode.parentNode.querySelectorAll('.track'), function(v){
+								console.log(v.dataset.id);
+								ctrl.queue(playlist_id, parseInt(v.dataset.id));
+							}, 50);
+						});
+						group.firstChild.childNodes[1].addEventListener("contextmenu", function(e){
+							e.stopPropagation();
+							toolkit.delayEach(this.parentNode.parentNode.querySelectorAll('.track.queued'), function(v){
+								console.log(v.dataset.id);
+								ctrl.unqueue(playlist_id, parseInt(v.dataset.id));
+							}, 50);
+						});
+						/*
+						group.firstChild.childNodes[2].addEventListener("click", function(e){
 							e.stopPropagation();
 							var offset = window.matchMedia("(max-width:799px)").matches ? 0 : -100;
 							var prev = this.parentNode.parentNode.previousSibling;
@@ -1369,9 +1422,7 @@ function Ihm(ctrl, configTables){
 									prev.firstChild.click();
 								$.scrollTo(prev, {offset:{ top:offset}});
 							}
-						});
-						group.firstChild.childNodes[2].addEventListener("click", function(e){
-							e.stopPropagation();
+							
 							var offset = window.matchMedia("(max-width:799px)").matches ? 0 : -100;
 							var next = this.parentNode.parentNode.nextSibling;
 							if(!next)$.scrollTo(this.parentNode.parentNode.lastChild, {duration:200});
@@ -1380,7 +1431,7 @@ function Ihm(ctrl, configTables){
 									next.firstChild.click();
 								$.scrollTo(next, {offset:{ top:offset}});
 							}
-						});
+						});*/
 						dm.appendChild(group);
 					}
 				}
@@ -1415,6 +1466,10 @@ function Ihm(ctrl, configTables){
 				btn = buttonTemplates.queue.cloneNode(true);
 				btn.addEventListener("click", function(){
 					ctrl.queue(playlist_id, v.id);
+				});
+				btn.addEventListener("contextmenu", function(e){
+					ctrl.unqueue(playlist_id, v.id);
+					e.preventDefault();
 				});
 				track.childNodes[2].appendChild(btn);
 				
@@ -1609,10 +1664,9 @@ function Ihm(ctrl, configTables){
 			ctrl.loadCover();
 			if(tabpls === ctrack.pls && tab === 1){
 				$("#main .track:not([data-id="+ctrack.id+"])").removeClass("active");
-				var tr = $("#main .track[data-id="+ctrack.id+"]").addClass("active");
+				$("#main .track[data-id="+ctrack.id+"]").addClass("active");
 				if(conf.followTrack){
-					tr.parent().removeClass("folded");
-					$.scrollTo(tr, {offset:{ top:-200}, duration:500});
+					scrollToTrack(ctrack.id);
 				}
 			}
 		}
@@ -1639,6 +1693,7 @@ function Ihm(ctrl, configTables){
 		timebar.setPosition(p);
 	};
     
+	var noScroll = false;
     function showSettings(){
 		$("#main .detach").detach();
 		document.getElementById("main").className = "";
@@ -1648,7 +1703,7 @@ function Ihm(ctrl, configTables){
         tab = 3;
         $("nav a").removeClass("active");
         $("nav a[data-lnk=\"settings\"]").addClass("active");
-        var m = $("#main").html($("<h1>").text(i18n.settings.h));
+        var m = $("#main").html($("<h1>").text(i18n.nav.settings));
 		$("<p>").appendTo(m).text(i18n.settings.saveT);
 		
 		$("<h2>").appendTo(m).text(i18n.settings.lang);
@@ -1682,7 +1737,7 @@ function Ihm(ctrl, configTables){
 				conf.skin = k;
 				saveConfig();
 				applySkin(v);
-				showSettings();
+				noScroll=true;showSettings();
 			});
 		});
 				
@@ -1694,14 +1749,14 @@ function Ihm(ctrl, configTables){
 			$("<div>").appendTo(m).addClass("checkbox").text(i18n.generic.enabled).addClass("active").click(function(){
 				conf.notif = false;
 				saveConfig();
-				showSettings();
+				noScroll=true;showSettings();
 			});
 		}else{
 			$("<div>").appendTo(m).addClass("checkbox").text(i18n.generic.disabled).click(function(){
 				conf.notif = true;
 				saveConfig();
 				Notification.requestPermission(public.updateTrack);
-				showSettings();
+				noScroll=true;showSettings();
 			});
 		}
 		$("<span>").appendTo(m).text(i18n.settings.notificationsT);
@@ -1710,14 +1765,14 @@ function Ihm(ctrl, configTables){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.globalSort ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.globalSort ? "active" : "").click(function(){
 			conf.globalSort = !(conf.globalSort && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.globalSort);
 		$("<br>").appendTo(m);
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.oneGroup ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.oneGroup ? "active" : "").click(function(){
 			conf.oneGroup = !(conf.oneGroup && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.oneGroup);
 		$("<br>").appendTo(m);
@@ -1734,21 +1789,21 @@ function Ihm(ctrl, configTables){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.downloadButton ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.downloadButton ? "active" : "").click(function(){
 			conf.downloadButton = !(conf.downloadButton && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.downloadButton);
 		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(!conf.hideRatings ? i18n.generic.enabled : i18n.generic.disabled).addClass(!conf.hideRatings ? "active" : "").click(function(){
 			conf.hideRatings = !(conf.hideRatings && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.showRating);
 		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.showInfos ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.showInfos ? "active" : "").click(function(){
 			conf.showInfos = !(conf.showInfos && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 			public.updateTrack({track_id:ctrack.id, playlist_id:ctrack.pls});
 		});
 		$("<span>").appendTo(m).text(i18n.settings.showInfos);
@@ -1758,12 +1813,20 @@ function Ihm(ctrl, configTables){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.followTrack ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.followTrack ? "active" : "").click(function(){
 			conf.followTrack = !(conf.followTrack && true || false);
 			saveConfig();
-			showSettings();
+			noScroll=true;showSettings();
 		});
 		$("<span>").appendTo(m).text(i18n.settings.followTrack);
+		$("<br>").appendTo(m);
+		$("<div>").appendTo(m).addClass("checkbox").text(conf.debug ? i18n.generic.enabled : i18n.generic.disabled).addClass(conf.debug ? "active" : "").click(function(){
+			conf.debug = !(conf.debug && true || false);
+			saveConfig();
+			noScroll=true;showSettings();
+		});
+		$("<span>").appendTo(m).text(i18n.errors.debugMode);
 		
 		$("<p>").appendTo(m).text(" ");
-		$.scrollTo("#main h1");
+		if(!noScroll) $.scrollTo("#main h1");
+		noScroll = false;
     }
 	
 	function showEqualizer(){
@@ -1773,7 +1836,7 @@ function Ihm(ctrl, configTables){
 		tab = 4;
 		$("nav a").removeClass("active");
 		$("nav a[data-lnk=\"equalizer\"]").addClass("active");
-		var m = $("#main").html($("<h1>").text(i18n.equalizer.h));
+		var m = $("#main").html($("<h1>").text(i18n.nav.equalizer));
 		$("<p>").appendTo(m).text(i18n.equalizer.refreshT);
 		$("<button>").appendTo(m).text(i18n.equalizer.refresh).click(ctrl.refreshEQ);
 		
@@ -1803,7 +1866,7 @@ function Ihm(ctrl, configTables){
 			.append(equalizers.flanger.t)
 			.append(equalizers.flanger.e);
 		
-		$("<h2>").appendTo(m).text(i18n.equalizer.h);
+		$("<h2>").appendTo(m).text(i18n.nav.equalizer);
 		var enBtn = $("<div>").appendTo(m).addClass("checkbox").text(equalizers.group.enabled ? i18n.generic.enabled : i18n.generic.disabled).click(function(){
 			ctrl.setStatus(10, 1*!equalizers.group.enabled);
 			equalizers.group.enabled = !equalizers.group.enabled;
@@ -1847,6 +1910,18 @@ function Ihm(ctrl, configTables){
 		}
 	}
 	
+	function showErrors(){
+		$("#main .detach").detach();
+		document.getElementById("main").className = "";
+		$("#fixedPanel").removeClass("active");
+		tab = 7;
+		$("nav a").removeClass("active");
+		$("nav a[data-lnk=\"errors\"]").addClass("active");
+		var m = $("#main").html($("<h1>").text(i18n.nav.errors));
+		
+		$.scrollTo("#main h1");
+	}
+	
 	function showCredits(){
 		$("#main .detach").detach();
 		document.getElementById("main").className = "";
@@ -1854,7 +1929,7 @@ function Ihm(ctrl, configTables){
 		tab = 5;
 		$("nav a").removeClass("active");
 		$("nav a[data-lnk=\"credits\"]").addClass("active");
-		var m = $("#main").html($("<h1>").text(i18n.credits.h));
+		var m = $("#main").html($("<h1>").text(i18n.nav.credits));
 		$("<p>").appendTo(m).text(i18n.credits.dev({dev:"Gilles Waeber"})+" [").append($("<a>").attr("href","http://gilleswaeber.ch").text("gilleswaeber.ch")).append("]");
 		$("<h2>").appendTo(m).text(i18n.credits.ressources);
 		$("<p>").appendTo(m).text(i18n.credits.appUsing({what:"Entypo icons",who:"Daniel Bruce"})+" [").append($("<a>").attr("href","http://www.entypo.com").text("www.entypo.com")).append("]");
@@ -1864,6 +1939,10 @@ function Ihm(ctrl, configTables){
 		
 		$("<p>").appendTo(m).text(" ");
 		$.scrollTo("#main h1");
+	}
+	
+	function showPopup(track, event){
+		
 	}
 	
 	function applySkin(skin){
@@ -1925,22 +2004,18 @@ function Ctrl(){
 			brightRed:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#F00"},
 			brightOrange:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#F72"},
 			
-			geekGreen:{background:"#000", background2:"#222", foreground:"#0C0", accent:"#0F0"},
-			geekGreen2:{background:"#000", background2:"#222", foreground:"#0C0", accent:"#060"},
-			geekRed:{background:"#000", background2:"#222", foreground:"#C00", accent:"#F00"},
-			geekRed2:{background:"#000", background2:"#222", foreground:"#F00", accent:"#600"},
-			geekBlue:{background:"#000", background2:"#222", foreground:"#0CC", accent:"#0FF"},
-			geekBlue2:{background:"#000", background2:"#222", foreground:"#0FF", accent:"#066"},
-			geekYellow:{background:"#000", background2:"#222", foreground:"#CC0", accent:"#FF0"},
-			geekYellow2:{background:"#000", background2:"#222", foreground:"#FF0", accent:"#660"},
+			geekGreen:{background:"#000", background2:"#333", foreground:"#2A2", accent:"#0F0"},
+			geekRed:{background:"#000", background2:"#333", foreground:"#A00", accent:"#F00"},
+			geekBlue:{background:"#000", background2:"#333", foreground:"#2AA", accent:"#0FF"},
+			geekYellow:{background:"#000", background2:"#333", foreground:"#AA2", accent:"#FF0"},
 			
-			darkGreen:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#2B2"},
-			darkOrange:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#F91"},
-			darkRed:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#C22"},
-			darkBlue:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#2CC"},
-			darkBlue2:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#26C"},
-			darkPurple:{background:"#000", background2:"#222", foreground:"#DDD", accent:"#C2C"},
-			darkGrey:{background:"#000", background2:"#222", foreground:"#AAA", accent:"#DDD"},
+			darkGreen:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#2B2"},
+			darkOrange:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#F91"},
+			darkRed:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#C22"},
+			darkBlue:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#2CC"},
+			darkBlue2:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#26C"},
+			darkPurple:{background:"#000", background2:"#333", foreground:"#DDD", accent:"#C2C"},
+			darkGrey:{background:"#000", background2:"#333", foreground:"#AAA", accent:"#EEE"},
 			
 			fullGreen:{background:"#030", background2:"#050", foreground:"#DDD", accent:"#0D0"},
 			fullBlue:{background:"#003", background2:"#005", foreground:"#DDD", accent:"#0DD"},
@@ -1981,9 +2056,9 @@ function Ctrl(){
 	};
 	var itfIhm = {}, ctrl = {};
 	
-	var TRACK_FIELDS = ["channels", "path", "extension", "filename", "arating", "folder", "creationdate", "creationtime", "disc", "track", "modificationdate", "modificationtime", "samplerate"],
-		PLAYLIST_FIELDS = ["id", "title", "artist", "album", "duration", "track", "disc", "path", "rating", "arating", "folder", "channels", "filename", "extension", "bitrate", "channels", "samplerate"],
-		QUEUE_FIELDS = ["id","title","artist","album","duration","playlist_id", "rating", "arating"];
+	var TRACK_FIELDS = ["channels","path","extension","filename","arating","folder","creationdate","creationtime","disc","track","modificationdate","modificationtime"],
+		PLAYLIST_FIELDS = ["album","artist","bitrate","channels","path","extension","filename","genre","samplerate","duration","filesize","title","date","folder","id","creationdate","creationtime","disc","track","arating","rating","modificationdate","modificationtime"],
+		QUEUE_FIELDS = _.extend(["playlist_id"], PLAYLIST_FIELDS);
 	
 	var wrk = Wrk("",function(r){console.log(r);},function(f){console.log(f);return true;});
 	var ihm = Ihm(itfIhm, configTables);

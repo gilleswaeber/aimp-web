@@ -34,6 +34,7 @@ raw =
 		moveDown:"Descendre",
 		moveUp:"Monter",
 		queueEmpty:"La file d'attente est vide !",
+		queueClear:"Vider la file d'attente",
 		sortBy:"Trier par : ",
 		groupBy:"Grouper par : ",
 		foldAll:"Tout replier",

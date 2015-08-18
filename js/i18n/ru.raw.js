@@ -38,8 +38,6 @@ raw =
 		h:"Настройки",
 		
 		lang:"Язык интерфейса",
-		langT:"Here are the different available languages.",
-		completion:"{p}% complete",
 		
 		skins:"Обложки",
 	},

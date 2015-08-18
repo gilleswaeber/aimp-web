@@ -29,6 +29,56 @@
 		{
 			"icon": {
 				"paths": [
+					"M128 512h179.2v-358.4h409.6v358.4h179.2l-384 384-384-384z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"arrow-bold-down"
+				],
+				"grid": 20
+			},
+			"attrs": [],
+			"properties": {
+				"id": 15,
+				"order": 41,
+				"prevSize": 20,
+				"code": 58913,
+				"name": "arrow-bold-down",
+				"ligatures": "arrowDown"
+			},
+			"setIdx": 0,
+			"setId": 0,
+			"iconIdx": 15
+		},
+		{
+			"icon": {
+				"paths": [
+					"M896 512l-384 384v-179.2h-358.4v-409.6h358.4v-179.2l384 384z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"arrow-bold-right"
+				],
+				"grid": 20
+			},
+			"attrs": [],
+			"properties": {
+				"id": 17,
+				"order": 39,
+				"prevSize": 20,
+				"code": 58912,
+				"name": "arrow-bold-right",
+				"ligatures": "arrowRight"
+			},
+			"setIdx": 0,
+			"setId": 0,
+			"iconIdx": 17
+		},
+		{
+			"icon": {
+				"paths": [
 					"M512 128l384 384h-179.2v358.4h-409.6v-358.4h-179.2l384-384z"
 				],
 				"attrs": [],
@@ -225,6 +275,30 @@
 			"setIdx": 0,
 			"setId": 0,
 			"iconIdx": 58
+		},
+		{
+			"icon": {
+				"paths": [
+					"M512.051 399.36c-62.208 0-112.691 50.432-112.691 112.64s50.483 112.64 112.691 112.64c62.208 0 112.589-50.432 112.589-112.64s-50.381-112.64-112.589-112.64zM512.051 266.24c62.208 0 112.589-50.483 112.589-112.64s-50.381-112.64-112.589-112.64c-62.208 0-112.691 50.432-112.691 112.64s50.483 112.64 112.691 112.64zM512.051 757.76c-62.208 0-112.691 50.432-112.691 112.64s50.483 112.64 112.691 112.64c62.208 0 112.589-50.432 112.589-112.64s-50.381-112.64-112.589-112.64z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"dots-three-vertical"
+				],
+				"grid": 20
+			},
+			"attrs": [],
+			"properties": {
+				"id": 60,
+				"order": 38,
+				"prevSize": 20,
+				"code": 58911,
+				"name": "dots-three-vertical"
+			},
+			"setIdx": 0,
+			"setId": 0,
+			"iconIdx": 60
 		},
 		{
 			"icon": {
@@ -802,7 +876,8 @@
 			"showSelector": false,
 			"showMetrics": false,
 			"showMetadata": false,
-			"showVersion": false
+			"showVersion": false,
+			"embed": false
 		},
 		"imagePref": {
 			"prefix": "icon-",

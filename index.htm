@@ -8,7 +8,7 @@
 		<script type="text/javascript" src="js/lib/jquery-plugins.min.js"></script>
 		<script type="text/javascript" src="js/lib/underscore.min.js"></script>
 		<script type="text/javascript" src="js/lib/rlib.min.js"></script>
-		<script type="text/javascript" src="js/lib/toolkit.min.js"></script>
+		<script type="text/javascript" src="js/lib/toolkit.js"></script>
 		<script type="text/javascript" src="js/lib/sortable.min.js"></script>
 		<script type="text/javascript" src="js/script.js"></script>
 		<script type="text/javascript">document.write('<script type="text/javascript" src="js/i18n/' + (localStorage.getItem('lang') || 'en') + '.js"><\/script>')</script>
@@ -44,12 +44,13 @@
 		<nav>
 			<h1>AimpWeb</h1>
 			<a data-lnk="queue">Queue</a>
+			<a data-lnk="errors">Errors</a>
 			<h2 data-h="playlists">Playlists</h2>
 			<div id="playlists"></div>
 			<h2 data-h="settings">Settings</h2>
 			<a data-lnk="settings">Settings</a>
 			<a data-lnk="equalizer">Equalizer</a>
-			<a data-lnk="scheduler">Scheduler</a>
+			<!--<a data-lnk="scheduler">Scheduler</a>-->
 			<a data-lnk="credits">Credits</a>
 			<a data-lnk="fullscreen">Fullscreen</a>
 		</nav>
@@ -57,12 +58,12 @@
 			<h1>Welcome to AimpWeb</h1>
 			<h2>To do</h2>
 			<ul>
-				<li>Alternate queue move</li>
-				<li>Implement scheduler</li>
-				<li>Implement playlist modification</li>
-				<li>Implement not shuffled workaround</li>
 				<li>Handle disconnection</li>
-				<li>Implement lyrics ?</li>
+				<li>Presenter mode</li>
+				<li>Keyboard shortcuts</li>
+				<li>More sort options</li>
+				<li>Track details (by clicking/hovering number ?)</li>
+				<li>[OPT] Implement playlist modification</li>
 			</ul>
 		</section>
 		<div id="fixedPanel">

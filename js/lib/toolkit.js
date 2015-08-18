@@ -47,5 +47,18 @@ var toolkit = function(){
 		return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	};
 	
+	toolkit.delayEach = function(array, callback, delay){
+		var myarray = [];
+		Array.forEach(array, function(v,k){myarray.push([v,k]);});
+		var i = 0;
+		function next(){
+			if(i >= myarray.length)return;
+			callback(myarray[i][0], myarray[i][1]);
+			setTimeout(next, delay);
+			i++;
+		}
+		next();
+	};
+	
 	return toolkit;
 }();
