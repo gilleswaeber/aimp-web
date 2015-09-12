@@ -60,5 +60,22 @@ var toolkit = function(){
 		next();
 	};
 	
+	toolkit.pad2 = function(i){
+		return (i<10?"0"+i:i);
+	};
+	
+	toolkit.time = function(t){
+		t=Math.floor(t/1000);
+		if(t<3600)return Math.floor(t/60)+":"+toolkit.pad2(t%60);
+		else if(t<360000)return Math.floor(t/3600)+toolkit.pad2(Math.floor(t/60))+":"+toolkit.pad2(t%60);
+		else return Math.floor(t/86400)+toolkit.pad2(Math.floor(t/3600))+toolkit.pad2(Math.floor(t/60))+":"+toolkit.pad2(t%60);
+	};
+	
+	toolkit.year = function(d){
+		if(d.length <= 4) return d;
+		else if(/^[0-9]{4}/.test(d))return d.substr(0,4);
+		else return d;
+	};
+	
 	return toolkit;
 }();

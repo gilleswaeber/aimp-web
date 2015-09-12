@@ -57,7 +57,7 @@ body{
 	background:#FFF;
 }
 
-*, #main canvas{
+*, #main canvas, #main .control, #main .rating, #main .rating *, #main button, #searchbar div, #popup .tools span:not(.field){
 	cursor: default;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -65,7 +65,7 @@ body{
 	user-select: none;
 }
 
-#title, #infos1, #infos2, .title, .artist, .album, .duration, nav a, #main, #main *{
+#title, #infos1, #infos2, #infos2 > div:not(.rating), .title, .artist, .album, .duration, nav a, #main, #main *, #popup span:not(.field){
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;
@@ -574,17 +574,24 @@ nav a.active.playing{
 }
 
 .langs > div{
-	margin:0 10px;
+	margin:0 10px 8px;
 	position: relative;
 }
 
 .langs > div > div{
-	width:32%;
+	min-width:100px;
+	max-width:30%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	display: inline-block;
 	cursor: pointer;
+	vertical-align: top;
+	padding: 0 10px 0 0;
+}
+.langs > div > .author{
+	display: inline;
+	white-space: normal;
 }
 
 .langs > div.active{
@@ -626,7 +633,7 @@ nav a.active.playing{
 	padding:3px 8px;
 	cursor: pointer;
 	font-size: 14px;
-	min-width: 80px;
+	min-width: 100px;
 }
 .checkbox:before{
 	content:"no";
@@ -699,12 +706,39 @@ nav a.active.playing{
 #popup{
 	position: absolute;
 	background: #000;
-	color: #FFF;
+	color: #EEE;
 	display: none;
 	z-index: 500;
 	font-size: 16px;
 	padding: 0 3px;
-	text-align: center;
+	max-width: 92vw;
+}
+#popup .title{
+	font-weight: 600;
+}
+#popup span.field{
+	margin-right: 10px;
+	font-size:14px;
+	min-width: 80px;
+	display:inline-block;
+}
+#popup .rating{
+	display:inline-block;
+}
+#popup .tools > *:not(.field){
+	font-size: 16px;
+	font-weight: 600;
+}
+#popup .tools span{
+	margin-right: 10px;
+}
+#popup .tools select{
+	font-family: body;
+	margin-left: 85px;
+	padding: 0;
+	border: none;
+	background: none;
+	color: #EEE;
 }
 
 .rlib_slider{

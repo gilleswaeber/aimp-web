@@ -126,5 +126,6 @@ raw =
 		blocked:"Indisponible",
 		fullscreen:"Plein écran",
 		confirm:"Êtes-vous sûr de vouloir continuer ?",
+		colon:" : ",
 	}
 }
