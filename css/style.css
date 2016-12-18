@@ -57,12 +57,20 @@ body{
 	background:#FFF;
 }
 
+body.rtl{
+	direction: rtl;
+}
+
 *, #main canvas, #main .control, #main .rating, #main .rating *, #main button, #searchbar div, #popup .tools span:not(.field){
 	cursor: default;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+body.rtl #main .control{
+	transform: scaleX(-1);
 }
 
 #title, #infos1, #infos2, #infos2 > div:not(.rating), .title, .artist, .album, .duration, nav a, #main, #main *, #popup span:not(.field){
@@ -186,6 +194,10 @@ header{
 	color: #484;
 }
 
+body.rtl #controlbuttons > div:not(#bvolume):not(#volume):not(#volumebar){
+	transform: scaleX(-1);
+}
+
 #controlbuttons #bplay{
 	font-size: 30px;
 }
@@ -258,6 +270,10 @@ header{
 	max-height: 80vh;
 }
 
+body.rtl .eqMSlider{
+	margin:10px 10px 10px 30px;
+}
+
 #time{
 	display:inline-block;
 	margin-left: 5px;
@@ -275,6 +291,12 @@ nav{
 	overflow-x: hidden;
 	z-index:200;
 	background: #FFF;
+}
+body.rtl nav{
+	left:inherit;
+	right:0;
+	border-left: solid 3px #000;
+	border-right: none;
 }
 
 nav h1{
@@ -304,11 +326,14 @@ nav a.active{
 	font-weight: 800;
 }
 
-nav a.playing{
+body:not(.rtl) nav a.playing{
 	border-right: solid 3px #484;
 }
+body.rtl nav a.playing{
+	border-left: solid 3px #484;
+}
 
-nav a.active.playing{
+body nav a.active.playing{
 	border-color: #FFF;
 }
 
@@ -318,6 +343,9 @@ nav a.active.playing{
 	padding: 0 0 0 223px;
 	font-size: 16px;
 }
+body.rtl #main{
+	padding: 0 223px 0 0;
+}
 
 #main h1{
 	font-size:28px;
@@ -326,6 +354,10 @@ nav a.active.playing{
 	padding-top: 113px;
 	display:flex;
 	align-items: center;
+}
+
+body.rtl #main h1{
+	margin:0 10px 0 10px;
 }
 
 #main h1 span{
@@ -371,7 +403,7 @@ nav a.active.playing{
 #main h2{
 	font-size:20px;
 	font-weight: 600;
-	margin:10px 0 0 10px;
+	margin:10px 10px 0 10px;
 	background: #FFF;
 }
 
@@ -383,7 +415,9 @@ nav a.active.playing{
 	margin-top: 5px;
 	padding-top: 5px;
 	margin-left: 0;
+	margin-right: 0;
 	padding-left: 10px;
+	padding-right: 10px;
 	border-bottom: solid 3px #EEE;
 	white-space: nowrap;
 	overflow: hidden;
@@ -391,7 +425,7 @@ nav a.active.playing{
 }
 
 #main p{
-	margin:0 0 5px 10px;
+	margin:0 10px 5px 10px;
 }
 
 #main .message{
@@ -444,14 +478,22 @@ nav a.active.playing{
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+body.rtl .group h2 span{
+	text-align: right;
+}
 
-.group h2 span:before{
+body:not(.rtl) .group h2 span:before, body.rtl .group h2 span:after{
 	content: "minus";
 	font-family: icons;
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
 	margin-right: 5px;
 	font-weight: 400;
+	direction: ltr;
+}
+body.rtl .group h2 span:after{
+	margin:0 0 0 5px;
+	transform: rotateY(180deg) ;
 }
 
 .group h2 div{
@@ -464,15 +506,15 @@ nav a.active.playing{
 	padding: 0;
 }
 
-.group.folded h2 span:before{
+body:not(.rtl) .group.folded h2 span:before, body.rtl .group.folded h2 span:after{
 	content: "plus";
 }
 
-.folders .group h2 span:before{
+body:not(.rtl) .folders .group h2 span:before, body.rtl .folders .group h2 span:after{
 	content: "left";
 }
 
-.folders .group.folded h2 span:before{
+body:not(.rtl) .folders .group.folded h2 span:before, body.rtl .folders .group.folded h2 span:after{
 	content: "right";
 }
 
@@ -509,9 +551,15 @@ nav a.active.playing{
 	flex-shrink: 0;
 }
 
+body.rtl .track > *{
+	text-align:right;
+	margin-left: 0;
+}
+
 .track .no{
 	width:40px;
-	text-align:right;
+	margin-left:10px;
+	direction: ltr;
 }
 
 .track .title{
@@ -527,6 +575,11 @@ nav a.active.playing{
 	font-size:20px;
 	-webkit-font-feature-settings: "liga";
 	font-feature-settings: "liga";
+}
+
+body.rtl .track .control{
+	margin-right: 0;
+	margin-left: 20px;
 }
 
 .track .title, .track .artist, .track .album{
@@ -574,27 +627,43 @@ nav a.active.playing{
 }
 
 .langs > div{
-	margin:0 10px 8px;
-	position: relative;
+	margin:0 10px 10px 10px;
+	background:#EEE;
+	-display:inline-block;
+	-width:240px;
+	padding: 2px 4px;
+}
+.langs *{
+	cursor: pointer;
 }
 
-.langs > div > div{
-	min-width:100px;
-	max-width:30%;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	display: inline-block;
-	cursor: pointer;
-	vertical-align: top;
-	padding: 0 10px 0 0;
+.langs:not(.all) > div:not(.more):not(.active):not(:first-child), .langs.all > div.more{
+  display: none;
 }
-.langs > div > .author{
-	display: inline;
-	white-space: normal;
+
+.langs .enname{
+	font-size: .7em;
+	float: right;
+}
+.langs .author{
+	font-size: .8em;
+	-n-white-space: nowrap;
+	-n-overflow: hidden;
+	-n-text-overflow: ellipsis;
+}
+
+body.rtl .langs .author{
+	direction: ltr;
+	text-align: right;
+}
+
+body.rtl .langs .enname{
+	float: left;
 }
 
 .langs > div.active{
+	background:#484;
+	color:#FFF;
 	font-weight: 600;
 }
 
@@ -669,6 +738,10 @@ nav a.active.playing{
 	color: #000;
 }
 
+body.rtl #main button{
+	margin:0 10px 10px 0;
+}
+
 #fixedPanel{
 	position: fixed;
 	bottom: 0;
@@ -691,6 +764,9 @@ nav a.active.playing{
 	padding:0 6px;
 	cursor: pointer;
 	flex-shrink:0;
+}
+body.rtl #fixedPanel div:not(#fbup){
+	transform: scaleX(-1);
 }
 
 #fixedPanel div.spacer{
@@ -828,7 +904,7 @@ nav a.active.playing{
 		min-height: 95vh;
 		min-height: calc(100vh - 23px);
 	}
-	#main{
+	#main, body.rtl #main{
 		padding:0;
 	}
 	#main h1{
@@ -951,28 +1027,43 @@ nav a.active.playing{
 		top: 30px;
 	}
 	
-	.track .title{
+	body:not(.rtl) .track .title{
 		left:10px;
 		right:100px;
 	}
-	.track .duration{
+	body.rtl .track .title{
+		left:100px;
+		right:10px;
+	}
+	body:not(.rtl) .track .duration{
 		width:40px !important;
 		right:60px;
 	}
+	body.rtl .track .duration{
+		width:40px !important;
+		left:60px;
+	}
 	
-	.track .artist{
+	body:not(.rtl) .track .artist{
 		left:10px;
 		right:150px;
 	}
-	.track .rating{
+	body.rtl .track .artist{
+		left:150px;
+		right:10px;
+	}
+	body:not(.rtl) .track .rating{
 		width:90px !important;
 		right:60px;
+	}
+	body.rtl .track .rating{
+		width:90px !important;
+		left:60px;
 	}
 	
 	.track .controls{
 		position: absolute;
 		top: 5px;
-		right: 5px;
 		height: 50px;
 		width: 50px !important;
 		font-size: 20px;
@@ -983,8 +1074,14 @@ nav a.active.playing{
 		align-items: center;
 		justify-content: space-around;
 	}
+	body:not(.rtl) .track .controls{
+		right: 5px;
+	}
+	body.rtl .track .controls{
+		left: 5px;
+	}
 	
-	.track .controls .control{
+	.track .controls .control, body.rtl .track .controls .control{
 		margin:0;
 	}
 	

@@ -26,11 +26,10 @@ function Ihm(ctrl, configTables){
 	var popup;
 	
 	// Modules
-	var settings, equalizer, playlists, queue;
+	var settings, equalizer, playlists, queue, errors;
 	
 	// DEBUG
 	DEBUG.ctrack = ctrack;
-	DEBUG.playlists = playlists;
 	DEBUG.system = system;
 	
 	ihm.i18n = function(messages){
@@ -71,15 +70,24 @@ function Ihm(ctrl, configTables){
 	ihm.init = function(){
 		equalizer = Ihm.equalizer({i18n:i18n, setStatus:ctrl.setStatus, refreshEQ:ctrl.refreshEQ, configTables:configTables, setTab:setTab, getTab:getTab});
 		equalizer.init();
+		
 		settings = Ihm.settings({i18n:i18n, configTables:configTables, setEqColors:equalizer.setColors, setTab:setTab, getTab:getTab, refreshTrack:function(){ihm.updateTrack({track_id:ctrack.id, playlist_id:ctrack.pls});}});
 		settings.init();
+		
 		queue = Ihm.queue({i18n:i18n, queueMove:ctrl.queuemove, unqueue:ctrl.unqueue, unqueueGroup:ctrl.unqueueGroup, setRating:ctrl.setRating, conf:settings.conf, buttonTemplates:buttonTemplates, setTab:setTab, getTab:getTab, getTabPls:function(){return playlists.tab;}});
 		queue.init();
 		ihm.loadQueue = queue.load;
+		
 		playlists = Ihm.playlists({i18n:i18n, ctrack:ctrack, loadPlaylist:ctrl.loadPlaylist, queue:ctrl.queue, queueGroup:ctrl.queueGroup, unqueue:ctrl.unqueue, unqueueGroup:ctrl.unqueueGroup, play:ctrl.play, download:ctrl.download, setRating:ctrl.setRating, conf:settings.conf, saveConfig:settings.saveConfig, buttonTemplates:buttonTemplates, showTrack:ihm.showTrack, showPopup:showPopup, inQueue:queue.in, setTab:setTab, getTab:getTab});
 		playlists.init();
 		ihm.updatePlaylists = playlists.update;
 		ihm.loadPlaylist = playlists.load;
+		DEBUG.playlists = playlists.pl;
+		
+		errors = Ihm.errors({i18n:i18n, conf:settings.conf, setTab:setTab, getTab:getTab});
+		errors.init();
+		ihm.defSuccess = errors.defSuccess;
+		ihm.defError = errors.defError;
 		
 		$("#bprev, #fbprev").click(ctrl.previous).attr("title",i18n.controls.prev);
 		$("#bstop").click(ctrl.stop).attr("title",i18n.controls.stop);
@@ -91,7 +99,7 @@ function Ihm(ctrl, configTables){
 		$("#bvolume").mouseover(function(){setTimeout(function(){$("#controlbuttons").addClass("volume");},10);}).click(function(){if($("#controlbuttons").hasClass("volume"))ctrl.setStatus(5, 1*!$("#bvolume").hasClass("active"));});
 		$("#controls").mouseleave(function(){$("#controlbuttons").removeClass("volume");});
 		$('nav a[data-lnk="queue"]').click(queue.show).text(i18n.nav.queue);
-		$('nav a[data-lnk="errors"]').click(showErrors).text(i18n.nav.errors);
+		$('nav a[data-lnk="errors"]').click(errors.show).text(i18n.nav.errors);
 		$('nav h2[data-h="playlists"]').text(i18n.nav.playlists);
 		$('nav h2[data-h="settings"]').text(i18n.nav.settings);
 		$('nav a[data-lnk="settings"]').click(settings.show).text(i18n.nav.settings);
@@ -282,18 +290,6 @@ function Ihm(ctrl, configTables){
 		}
 	}
 	
-	function showErrors(){
-		$("#main .detach").detach();
-		document.getElementById("main").className = "";
-		$("#fixedPanel").removeClass("active");
-		tab = 7;
-		$("nav a").removeClass("active");
-		$("nav a[data-lnk=\"errors\"]").addClass("active");
-		var m = $("#main").html($("<h1>").text(i18n.nav.errors));
-		
-		$.scrollTo("#main h1");
-	}
-	
 	function showCredits(){
 		$("#main .detach").detach();
 		document.getElementById("main").className = "";
@@ -308,7 +304,7 @@ function Ihm(ctrl, configTables){
 		$("<p>").appendTo(m).text(i18n.credits.aimp()+" [").append($("<a>").attr("href","http://www.aimp.ru").text("www.aimp.ru")).append("] [").append($("<a>").attr("href","https://github.com/a0ivanov/aimp-control-plugin").text("github.com/a0ivanov")).append("]");
 		$("<h2>").appendTo(m).text(i18n.credits.translations);
 		$("<p>").appendTo(m).text("French & english translations by Gilles Waeber.");
-		$("<p>").appendTo(m).text("Other translation using Aequalizer.shows when possible, completed by Bing Translator.");
+		$("<p>").appendTo(m).text("Other translation using human AIMP translation when possible, completed by Bing Translator.");
 		
 		$("<p>").appendTo(m).text(" ");
 		$.scrollTo("#main h1");

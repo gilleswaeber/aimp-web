@@ -118,6 +118,7 @@ Ihm.playlists = function(ihm){
 					})
 				)
 			));
+	
 			var group = $("<div>").appendTo(m).text(ihm.i18n.playlists.groupBy).addClass("groups");
 			var sort = $("<div>").appendTo(m).text(ihm.i18n.playlists.sortBy).addClass("sorts");
 			
@@ -174,6 +175,7 @@ Ihm.playlists = function(ihm){
 				pl[playlist_id].cache.sort(function(a, b){
 					for(var  i=0;i<psort.length;i++){
 						var av=pl[playlist_id].tracks[a][psort[i]], bv = pl[playlist_id].tracks[b][psort[i]];
+						
 						if(psort[i] === "track"){
 							av = 1*(av||0)+1000*(pl[playlist_id].tracks[a].disc || 0);
 							bv = 1*(bv||0)+1000*(pl[playlist_id].tracks[b].disc || 0);
@@ -331,7 +333,7 @@ Ihm.playlists = function(ihm){
 					track.appendChild(v.ratingEl.el);
 				}
 				
-				group.appendChild(track);				
+				group.appendChild(track);			
 			});
 			
 			var filler = $("<p>").appendTo("#main").text(" ");
@@ -411,7 +413,7 @@ Ihm.playlists = function(ihm){
 			else{
 				pl[p.playlist_id].tmap = {};
 				for(var i=0;i<o.entries.length;i++){
-					var m=p[p.playlist_id].tracks[i], n=o.entries[i];
+					var m=pl[p.playlist_id].tracks[i], n=o.entries[i];
 					
 					for(var ci=0;ci<c.length;ci++){
 						if(m[c[ci]] !== n[c[ci]]){

@@ -597,6 +597,52 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	};
 	
 	/**
+	 * Send small requests to the server at regular interval to check if it is still there.<br>
+	 * Will continue to ping until an error occurs.<br>
+	 * <b>Note : </b> This method doesn't use the default callbacks.<br>
+	 * If a timeout occurs, errorCallback is called with "TIMEOUT".
+	 * @param {function((int)ping)} [opt] successCallback
+	 * @param {function(error)} errorCallback (required)
+	 * @param {int} interval [opt] (milliseconds) default is 5000
+	 * @param {type} timeout [opt] (milliseconds) default is 15000
+	 * @returns {undefined}
+	 */
+	wrk.subscribe.ping = function(successCallback, errorCallback, interval, timeout){
+		
+		successCallback = successCallback || noop;
+		interval = interval || 5000;
+		timeout = timeout || 15000;
+		
+		var gstate = 0; // 0 = OK, 1 = Timeout/Error
+		
+		var itv = setInterval(function(){
+			var state = 0; // 0 = Sent, 1 = Timeout/Received
+			var sentTime = Date.now();
+			var tim = setTimeout(function(){
+				if(state + gstate > 0) return;
+				state = 1;
+				gstate = 1;
+				clearInterval(itv);
+				errorCallback("TIMEOUT");
+			}, timeout);
+			
+			wrk.status(function(){
+				if(state + gstate > 0) return;
+				state = 1;
+				clearTimeout(tim);
+				successCallback(Date.now() - sentTime);
+			}, function(f){
+				if(state + gstate > 0) return;
+				state = 1;
+				gstate = 1;
+				clearTimeout(tim);
+				clearInterval(itv);
+				errorCallback(f);
+			}, 1);
+		}, interval);
+	}
+	
+	/**
 	 * Set track rating.<br>
 	 * Result : {}
 	 * @param {function(result,params,method)} successCallback

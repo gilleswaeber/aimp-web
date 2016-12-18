@@ -7,17 +7,65 @@ function Ctrl(){
 			en:{
 				en:"English", l:"English", credits:"Gilles Waeber"
 			},
+			ar:{
+				en:"Arabic", l:"العربية", credits:"Automatic translation, using (ibraheem5000@gmail.com) إبراهيم سعيد AIMP translation", rtl:true
+			},
+			bg:{
+				en:"Bulgarian", l:"български", credits:"Automatic translation, using Peyu Yovev (spacy00001@gmail.com) AIMP translation"
+			},
+			ca:{
+				en:"Catalan", l:"català", credits:"Automatic translation, using Hiro5 (groccat at gmail) AIMP translation"
+			},
+			"zh-CHS":{
+				en:"Chinese Simplified", l:"简体中文", credits:"Automatic translation, using nabarl (realnabarl@gmail.com) AIMP translation"
+			},
+			"zh-CHT":{
+				en:"Chinese Traditional", l:"繁體中文", credits:"Automatic translation"
+			},
+			cs:{
+				en:"Czech", l:"čeština", credits:"Automatic translation, using Gtein (www.gcestiny.unas.cz) AIMP translation"
+			},
+			da:{
+				en:"Danish", l:"dansk", credits:"Automatic translation"
+			},
+			nl:{
+				en:"Dutch", l:"Nederlands", credits:"Automatic translation, using Jaap Kramer - (jaap-kramer@ziggo.nl) AIMP translation"
+			},
+			et:{
+				en:"Estonian", l:"eesti", credits:"Automatic translation, using EstFix AIMP translation"
+			},
+			fi:{
+				en:"Finnish", l:"suomi", credits:"Automatic translation, using Teemu Paavola (teemu@paavola.in) AIMP translation"
+			},
 			fr:{
 				en:"French", l:"Français", credits:"Gilles Waeber"
-			},
-			ru:{
-				en:"Russian", l:"Русский", credits:"Automatic translation, using Artem Izmaylov AIMP translation"
 			},
 			de:{
 				en:"German", l:"Deutsch", credits:"Automatic translation, using Martin Grunwald (martingrunwald@gmail.com) AIMP translation"
 			},
-			es:{
-				en:"Spanish", l:"Español", credits:"Automatic translation, using Lino Sotomayor (ljsp1@hotmail.com) [www.ReactOS.org] & Mario Angel (marioangel70@gmail.com) [www.tatinweb.com.ar] AIMP translation"
+			el:{
+				en:"Greek", l:"ελληνικά", credits:"Automatic translation, using Dmitry N. Giannopulos AIMP translation"
+			},
+			ht:{
+				en:"Haitian Creole", l:"Kreyòl ayisyen", credits:"Automatic translation"
+			},
+			he:{
+				en:"Hebrew", l:"עברית", credits:"Automatic translation, using Aharon Don (aronrefael@gmail.com) AIMP translation", rtl:true
+			},
+			hi:{
+				en:"Hindi", l:"हिन्दी", credits:"Automatic translation"
+			},
+			mww:{
+				en:"Hmong Daw", l:"Hmoob Daw", credits:"Automatic translation"
+			},
+			hu:{
+				en:"Hungarian", l:"magyar", credits:"Automatic translation, using Pap Molnár Zsolt (xtra_pap@yahoo.com) AIMP translation"
+			},
+			id:{
+				en:"Indonesian", l:"Bahasa Indonesia", credits:"Automatic translation, using Thomi saputra AIMP translation"
+			},
+			it:{
+				en:"Italian", l:"italiano", credits:"Automatic translation, using Styb (styb.styb@gmail.com) AIMP translation"
 			},
 			ja:{
 				en:"Japanese", l:"日本語", credits:"Automatic translation, using Tilt AIMP translation"
@@ -25,12 +73,60 @@ function Ctrl(){
 			ko:{
 				en:"Korean", l:"한국어", credits:"Automatic translation, using 松潭 권영관 [SongDam Ansgarius, 로보트킹] AIMP translation"				
 			},
+			lv:{
+				en:"Latvian", l:"latviešu valoda", credits:"Automatic translation, using Aldis Tutins - alibaba, lv.alibaba (alibaba@inbox.lv) AIMP translation"
+			},
+			lt:{
+				en:"Lithuanian", l:"lietuvių kalba", credits:"Automatic translation, using Ieva Shinoda (ievashinoda@gmail.com) AIMP translation"
+			},
+			ms:{
+				en:"Malay", l:"Bahasa melayu", credits:"Automatic translation"
+			},
+			no:{
+				en:"Norwegian", l:"Norsk", credits:"Automatic translation"
+			},
+			fa:{
+				en:"Persian", l:"فارسى", credits:"Automatic translation, using Hessam Mohamadi (حسام محمدی) AIMP translation", rtl: true
+			},
+			pl:{
+				en:"Polish", l:"polski", credits:"Automatic translation, using speed89, polskie wsparcie (www.aimp.com.pl) AIMP translation"
+			},
+			pt:{
+				en:"Portuguese", l:"português", credits:"Automatic translation"
+			},
+			ro:{
+				en:"Romanian", l:"limba română", credits:"Automatic translation, using Alexandru Bogdan Munteanu (muntealb@gmail.com) AIMP translation"
+			},
+			ru:{
+				en:"Russian", l:"Русский", credits:"Automatic translation, using Artem Izmaylov AIMP translation"
+			},
+			sk:{
+				en:"Slovak", l:"slovenčina", credits:"Automatic translation, using martinco78 (martinco78@azet.sk) AIMP translation"
+			},
+			sl:{
+				en:"Slovenian", l:"slovenščina", credits:"Automatic translation, using r3Qui3m r3qui3m@prmrtinet.si AIMP translation"
+			},
+			es:{
+				en:"Spanish", l:"Español", credits:"Automatic translation, using Lino Sotomayor (ljsp1@hotmail.com) [www.ReactOS.org] & Mario Angel (marioangel70@gmail.com) [www.tatinweb.com.ar] AIMP translation"
+			},
+			sv:{
+				en:"Swedish", l:"Svenska", credits:"Automatic translation, using Leif Larsson (Leif.Larsson@gmail.com) AIMP translation"
+			},
 			th:{
 				en:"Thai", l:"ไทย", credits:"Automatic translation, using VAMPIRE AND DC (Decepticons.p4@gmail.com) AIMP translation"
 			},
-			"zh-CHS":{
-				en:"Simplified Chinese", l:"简体中文", credits:"Automatic translation, using nabarl (realnabarl@gmail.com) AIMP translation"
-			}
+			tr:{
+				en:"Turkish", l:"Türkçe", credits:"Automatic translation, using Serdar ŞAHİN - www.serdarsahin.net - (serdar@serdarsahin.net) AIMP translation"
+			},
+			uk:{
+				en:"Ukrainian", l:"Українська", credits:"Automatic translation, using Олександр (6c6c6) [localize.org.ua] AIMP translation"
+			},
+			ur:{
+				en:"Urdu", l:"اردو", credits:"Automatic translation", rtl: true
+			},
+			vi:{
+				en:"Vietnamese", l:"tiếng việt", credits:"Automatic translation"
+			},
 		},
 		skins:{
 			cleanGreen:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#484"},
@@ -40,13 +136,13 @@ function Ctrl(){
 			cleanGrey:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#888"},
 			
 			brightGreen:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#0D0"},
-			brightBlue:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#0DD"},
+			brightBlue:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#0CD"},
 			brightPink:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#F06"},
 			brightRed:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#F00"},
 			brightOrange:{background:"#FFF", background2:"#EEE", foreground:"#000", accent:"#F72"},
 			
 			geekGreen:{background:"#000", background2:"#333", foreground:"#2A2", accent:"#0F0"},
-			geekRed:{background:"#000", background2:"#333", foreground:"#A00", accent:"#F00"},
+			geekRed:{background:"#000", background2:"#111", foreground:"#A00", accent:"#F00"},
 			geekBlue:{background:"#000", background2:"#333", foreground:"#2AA", accent:"#0FF"},
 			geekYellow:{background:"#000", background2:"#333", foreground:"#AA2", accent:"#FF0"},
 			
@@ -70,7 +166,7 @@ function Ctrl(){
 			blueOrange:{background:"#003", background2:"#005", foreground:"#DDD", accent:"#F62"},
 			bluePink:{background:"#003", background2:"#005", foreground:"#DDD", accent:"#D08"},
 			yellowPurple:{background:"#330", background2:"#550", foreground:"#DDD", accent:"#D0D"},
-			greenRed:{background:"#030", background2:"#050", foreground:"#DDD", accent:"#D00"},
+			yellowBlue:{background:"#332", background2:"#553", foreground:"#DDD", accent:"#08D"},
 			redGreen:{background:"#300", background2:"#500", foreground:"#DDD", accent:"#5C0"}
 		},
 		presets:{
@@ -104,7 +200,7 @@ function Ctrl(){
 	/**
 	 * @type Wrk
 	 */
-	var wrk = Wrk("",function(r){console.log(r);},function(f){console.log(f);return true;});
+	var wrk = Wrk("", function(r){ihm.defSuccess(r);}, function(f){ihm.defError(f);return true;});
 	/**
 	 * @type Ihm
 	 */
@@ -126,6 +222,11 @@ function Ctrl(){
 			localStorage.removeItem("lang");
 			document.location = "./";
 		}
+		var l = (localStorage.getItem('lang') || 'en');
+		if(configTables.lang[l] && configTables.lang[l].rtl){
+			document.body.classList.add('rtl');
+		}
+		
 		ihm.init();
 		for(i=1;i<=29;i++)wrk.status(ihm.updateState, null, i); // volume, balance, speed, play state, mute, reverb, echo, chorus, flanger, equalizer_on, 11 = equalizer 1, ..., 28 = equalizer 18, repeat
 		wrk.status(ihm.updateState, null, 41); // shuffle

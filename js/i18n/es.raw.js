@@ -36,6 +36,7 @@ raw = {
         "format": "Formato",
         "quality": "Calidad",
         "disc": "Disco N.º",
+        "year": "Año",
         "discN": "Disco {n}",
         "queueAdd": "Agregar a cola",
         "moveDown": "Mover hacia abajo",
@@ -57,7 +58,6 @@ raw = {
     "settings": {
         "lang": "Idiomas",
         "langT": "Aquí están los diferentes idiomas disponibles.",
-        "completion": "{p} % completa",
         "skins": "Temas",
         "skinsT": "Aquí puede seleccionar un skin para el reproductor.",
         "reloadT": "Cambiar esta opción volverá a cargar la aplicación.",
@@ -133,7 +133,6 @@ raw = {
         "disabled": "Con discapacidad",
         "blocked": "De carácter",
         "fullscreen": "Pantalla completa",
-        "confirm": "¿Estás seguro?",
-        "colon": ": "
+        "confirm": "¿Estás seguro?"
     }
 }

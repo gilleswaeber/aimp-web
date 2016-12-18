@@ -36,6 +36,7 @@ raw = {
         "format": "形式",
         "quality": "品質",
         "disc": "ディスク №",
+        "year": "年",
         "discN": "ディスク {n}",
         "queueAdd": "キューに追加\t",
         "moveDown": "下に移動します。",
@@ -57,7 +58,6 @@ raw = {
     "settings": {
         "lang": "言語",
         "langT": "別の利用可能な言語を示します。",
-        "completion": "{p} % 完了",
         "skins": "スキン",
         "skinsT": "ここでは、プレーヤーのためのスキンを選択できます。",
         "reloadT": "この設定を変更すると、アプリケーションが再読み込みされます。",
@@ -129,11 +129,10 @@ raw = {
     },
     "generic": {
         "loading": "読み込んでいます.",
-        "enabled": "有効になっています。",
-        "disabled": "無効になっています。",
+        "enabled": "活性化しました",
+        "disabled": "使用禁止",
         "blocked": "使用不可",
         "fullscreen": "フルスクリーン",
-        "confirm": "確かですか。",
-        "colon": ":"
+        "confirm": "確かですか。"
     }
 }

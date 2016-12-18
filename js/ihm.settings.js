@@ -32,14 +32,21 @@ Ihm.settings = function(ihm){
 		var ll = $("<div>").appendTo(m).addClass("langs");
 		_.each(ihm.configTables.lang, function(v,k){
 			var l = $("<div>").appendTo(ll);
-			$("<div>").appendTo(l).text(v.l).addClass("name");
 			$("<div>").appendTo(l).text(v.en).addClass("enname");
+			$("<div>").appendTo(l).text(v.l).addClass("name");
 			$("<div>").appendTo(l).text(v.credits).addClass("author");
 			if(k === clang)l.addClass("active");
 			else l.click(function(){
 				localStorage.setItem("lang", k);
 				document.location = "./";
 			});
+		});
+		var l = $("<div>").addClass("more").appendTo(ll);
+		$("<div>").appendTo(l).text("More languages").addClass("enname");
+		$("<div>").appendTo(l).text("+ See all").addClass("name");
+		$("<div>").appendTo(l).text(_.keys(ihm.configTables.lang).join(", ")).addClass("author");
+		l.click(function(){
+			ll.addClass("all");
 		});
 		
 		$("<h2>").appendTo(m).text(ihm.i18n.settings.skins);
@@ -57,7 +64,7 @@ Ihm.settings = function(ihm){
 				conf.skin = k;
 				saveConfig();
 				applySkin(v);
-				noScroll=true;showSettings();
+				noScroll=true;settings.show();
 			});
 		});
 				
@@ -69,14 +76,14 @@ Ihm.settings = function(ihm){
 			$("<div>").appendTo(m).addClass("checkbox").text(ihm.i18n.generic.enabled).addClass("active").click(function(){
 				conf.notif = false;
 				saveConfig();
-				noScroll=true;showSettings();
+				noScroll=true;settings.show();
 			});
 		}else{
 			$("<div>").appendTo(m).addClass("checkbox").text(ihm.i18n.generic.disabled).click(function(){
 				conf.notif = true;
 				saveConfig();
 				Notification.requestPermission(ihm.updateTrack);
-				noScroll=true;showSettings();
+				noScroll=true;settings.show();
 			});
 		}
 		$("<span>").appendTo(m).text(ihm.i18n.settings.notificationsT);
@@ -85,14 +92,14 @@ Ihm.settings = function(ihm){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.globalSort ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.globalSort ? "active" : "").click(function(){
 			conf.globalSort = !(conf.globalSort && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.globalSort);
 		$("<br>").appendTo(m);
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.oneGroup ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.oneGroup ? "active" : "").click(function(){
 			conf.oneGroup = !(conf.oneGroup && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.oneGroup);
 		$("<br>").appendTo(m);
@@ -109,21 +116,21 @@ Ihm.settings = function(ihm){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.downloadButton ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.downloadButton ? "active" : "").click(function(){
 			conf.downloadButton = !(conf.downloadButton && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.downloadButton);
 		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(!conf.hideRatings ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(!conf.hideRatings ? "active" : "").click(function(){
 			conf.hideRatings = !(conf.hideRatings && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.showRating);
 		$("<br>").appendTo(m);		
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.showInfos ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.showInfos ? "active" : "").click(function(){
 			conf.showInfos = !(conf.showInfos && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 			ihm.refreshTrack();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.showInfos);
@@ -133,16 +140,16 @@ Ihm.settings = function(ihm){
 		$("<div>").appendTo(m).addClass("checkbox").text(conf.followTrack ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.followTrack ? "active" : "").click(function(){
 			conf.followTrack = !(conf.followTrack && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
 		$("<span>").appendTo(m).text(ihm.i18n.settings.followTrack);
 		$("<br>").appendTo(m);
-		$("<div>").appendTo(m).addClass("checkbox").text(conf.debug ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.debug ? "active" : "").click(function(){
+		/*$("<div>").appendTo(m).addClass("checkbox").text(conf.debug ? ihm.i18n.generic.enabled : ihm.i18n.generic.disabled).addClass(conf.debug ? "active" : "").click(function(){
 			conf.debug = !(conf.debug && true || false);
 			saveConfig();
-			noScroll=true;showSettings();
+			noScroll=true;settings.show();
 		});
-		$("<span>").appendTo(m).text(ihm.i18n.errors.debugMode);
+		$("<span>").appendTo(m).text(ihm.i18n.errors.debugMode);*/
 		
 		$("<p>").appendTo(m).text(" ");
 		if(!noScroll) $.scrollTo("#main h1");
@@ -157,10 +164,10 @@ Ihm.settings = function(ihm){
 	function applySkin(skin){
 		$("<style>"+
 			"header, nav, body, #main button, #fixedPanel, #main h2{ background:" +skin.background+";}"+
-			"nav a.active.playing{ border-color:" +skin.background+";}"+
-			"nav a.active, .checkbox.active, .rlib_tip{ color:" +skin.background+";}"+
+			"body nav a.active.playing{ border-color:" +skin.background+";}"+
+			"body nav a.active, .checkbox.active, .rlib_tip, .langs > div.active{ color:" +skin.background+";}"+
 			
-			"#songblock, #timebar, #controlbuttons #volumebar, .rlib_slider, .checkbox, .eqMSlider, #searchbar{ background: "+skin.background2+";}"+
+			"#songblock, #timebar, #controlbuttons #volumebar, .rlib_slider, .checkbox, .eqMSlider, #searchbar, .langs > div{ background: "+skin.background2+";}"+
 			"#main .group h2{ border-color: "+skin.background2+";}"+
 			"#popup, #popup .tools select{ color: "+skin.background2+";}"+
 			
@@ -168,9 +175,9 @@ Ihm.settings = function(ihm){
 			".rlib_limit, .rlib_tip, #popup{ background:"+skin.foreground+";}"+
 			"body, #main button, #searchbar input{ color:"+skin.foreground+";}"+
 			
-			"nav a.active, .rlib_hfilled, .checkbox.active{ background:" +skin.accent+";}"+
+			"body nav a.active, .rlib_hfilled, .checkbox.active, .langs > div.active{ background:" +skin.accent+";}"+
 			"#cover.nocover, #controlbuttons div.active, .track.queued .control.queue, a:link, a:visited, .groups .active, .sorts .active, #fixedPanel div.active, .rlib_rating.set .star{ color: "+skin.accent+";}"+
-			"nav a.playing, .skins > div.active{ border-color:" +skin.accent+";}"+
+			"body nav a.playing:not(.active), .skins > div.active{ border-color:" +skin.accent+";}"+
 		"</style>").appendTo("head");
 		ihm.setEqColors(skin.foreground, skin.accent);
 	}

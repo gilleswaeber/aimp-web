@@ -36,6 +36,7 @@ raw = {
         "format": "格式",
         "quality": "品质",
         "disc": "光盘编号",
+        "year": "一年",
         "discN": "光盘 {n}",
         "queueAdd": "添加到队列",
         "moveDown": "向下移动",
@@ -57,7 +58,6 @@ raw = {
     "settings": {
         "lang": "语言",
         "langT": "这里有不同的可用语言。",
-        "completion": "{p} %完成",
         "skins": "皮肤",
         "skinsT": "在这里你可以选择皮肤这名球员。",
         "reloadT": "更改此设置将会重新加载应用程序。",
@@ -133,7 +133,6 @@ raw = {
         "disabled": "已禁用",
         "blocked": "不可用",
         "fullscreen": "全屏",
-        "confirm": "是否确定？",
-        "colon": ":"
+        "confirm": "是否确定？"
     }
 }

@@ -36,6 +36,7 @@ raw = {
         "format": "형식",
         "quality": "품질",
         "disc": "디스크 #",
+        "year": "1 년",
         "discN": "디스크 {n}",
         "queueAdd": "대기열에 추가",
         "moveDown": "아래로 이동",
@@ -57,7 +58,6 @@ raw = {
     "settings": {
         "lang": "언어 선택",
         "langT": "다른 사용 가능한 언어 같습니다.",
-        "completion": "{p} % 완료",
         "skins": "스킨",
         "skinsT": "여기는 선수에 대 한 스킨을 선택할 수 있습니다.",
         "reloadT": "이 설정을 변경 하면 응용 프로그램을 다시 로드 됩니다.",
@@ -133,7 +133,6 @@ raw = {
         "disabled": "사용 안 함",
         "blocked": "사용할 수 없음",
         "fullscreen": "전체 화면",
-        "confirm": "확실한가요?",
-        "colon": ": "
+        "confirm": "확실한가요?"
     }
 }
