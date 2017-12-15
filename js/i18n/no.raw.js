@@ -26,6 +26,7 @@ raw = {
         "title": "Tittel",
         "artist": "Artist",
         "album": "Albumet",
+        "albumartist": "Albumet artist",
         "duration": "Varighet",
         "track": "Spornummer",
         "path": "Filbane",

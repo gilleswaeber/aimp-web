@@ -26,6 +26,7 @@ raw = {
         "title": "Tiêu đề",
         "artist": "Nghệ sĩ",
         "album": "Album",
+        "albumartist": "Album nghệ sĩ",
         "duration": "Thời gian",
         "track": "Theo dõi số",
         "path": "Đường dẫn tệp",

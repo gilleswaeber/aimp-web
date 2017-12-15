@@ -26,6 +26,7 @@ raw = {
         "title": "Tit",
         "artist": "Atis",
         "album": "Albòm",
+        "albumartist":"Albòm atis",
         "duration": "Defini",
         "track": "Nimewo tras",
         "path": "Ranpli chemen",

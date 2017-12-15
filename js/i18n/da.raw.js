@@ -26,6 +26,7 @@ raw = {
         "title": "Titel",
         "artist": "Kunstner",
         "album": "Album",
+        "albumartist":"Album kunstner",
         "duration": "Varighed",
         "track": "Spornummer",
         "path": "Filstien",

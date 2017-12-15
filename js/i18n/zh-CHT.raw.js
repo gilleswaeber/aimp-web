@@ -26,6 +26,7 @@ raw = {
         "title": "標題",
         "artist": "演出者",
         "album": "專輯",
+        "albumartist":"冊頁演出者",
         "duration": "持續時間",
         "track": "曲目編號",
         "path": "檔路徑",

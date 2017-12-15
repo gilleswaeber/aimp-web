@@ -26,6 +26,7 @@ raw = {
         "title": "Npe",
         "artist": "Artist",
         "album": "Album",
+        "albumartist": "Album artist",
         "duration": "Ntev",
         "track": "Naj npawb khiav",
         "path": "Cov ntaub ntawv txog kev",

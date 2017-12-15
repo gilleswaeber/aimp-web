@@ -26,6 +26,7 @@ raw = {
         "title": "عنوان",
         "artist": "فن کار",
         "album": "البم",
+        "albumartist": "البم فن کار",
         "duration": "دورانیہ",
         "track": "ٹریک نمبر",
         "path": "مسل راہ",

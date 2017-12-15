@@ -26,6 +26,7 @@ raw = {
         "title": "Tajuk",
         "artist": "Artis",
         "album": "Album",
+        "albumartist": "Album artis",
         "duration": "Tempoh",
         "track": "Nombor runut",
         "path": "Laluan fail",

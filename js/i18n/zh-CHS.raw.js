@@ -26,8 +26,8 @@ raw = {
     "playlists": {
         "title": "标题",
         "artist": "艺术家",
-        "album": "专辑",
         "albumartist": "专辑艺术家",
+        "album": "专辑",
         "duration": "持续时间",
         "track": "音轨编号",
         "path": "文件夹名称",
