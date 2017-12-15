@@ -1,9 +1,10 @@
 AimpWeb
 =======
+Notice: This work is not affiliated to the official [AIMP player](https://www.aimp.ru/) in any way.
 
 Introduction
 ------------
-AimpWeb is an alternative interface for the [AIMP control plugin](https://github.com/a0ivanov/aimp-control-plugin).
+AimpWeb is an alternative web interface for the [AIMP control plugin](https://github.com/a0ivanov/aimp-control-plugin).
 
 Features:
 - Translations in about 50 languages, including some RTL languages
@@ -13,7 +14,7 @@ Features:
 - Web notification
 - Equalizer and support for some effects
 - Queue handling
-- A full-featured responsive mobile interface
+- A full-featured responsive mobile UI
 
 How to install
 --------------
