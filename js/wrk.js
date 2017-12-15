@@ -248,7 +248,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 	wrk.loadTrack = function(successCallback, errorCallback, playlist_id, track_id, fields){
 		var lfreq = "";
 		//var lp = ["album", "artist", "bitrate", "channels_count", "date", "duration", "filesize", "genre", "id", "playlist_id", "rating", "samplerate", "title"];
-		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM"};
+		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", albumartist:"%If(%AlbumArtist,%AlbumArtist,%Artist)"};
 		
 		for(var i=0;i<fields.length;i++){
 			lfreq += lf[fields[i]]+"%Char(30)";
@@ -388,7 +388,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 		var lffields = [], lfreq = "", lpfields = [];
 		
 		//var lp = ["id","title","artist","album","date","genre","bitrate","duration","filesize","rating","foldername"];
-		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", title:"%IF(%T,%T,%F)"};
+		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", title:"%IF(%T,%T,%F)", albumartist:"%If(%AlbumArtist,%AlbumArtist,%Artist)"};
 		
 		for(var i=0;i<fields.length;i++){
 			if(lf[fields[i]]){
@@ -482,7 +482,7 @@ function Wrk(_url, _defSuccessCallback, _defErrorCallback){
 		var lffields = [], lfreq = "", lpfields = [];
 		
 		//var lp = ["id","title","artist","album","date","genre","bitrate","duration","filesize","rating","foldername"];
-		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", title:"%IF(%T,%T,%F)"};
+		var lf = {channels:"%C", path:"%D", extension:"%E", filename:"%F", samplerate:"%H", folder:"%PD", creationdate:"%DC", creationtime:"%TC", disc:"%DN", track:"%TN", arating:"%RT", modificationdate:"%DM", modificationtime:"%TM", title:"%IF(%T,%T,%F)", albumartist:"%If(%AlbumArtist,%AlbumArtist,%Artist)"};
 		
 		for(var i=0;i<fields.length;i++){
 			if(lf[fields[i]]){

@@ -27,6 +27,7 @@ raw = {
         "title": "Titul",
         "artist": "Umelec",
         "album": "Album",
+        "albumartist": "Umelec albumu",
         "duration": "Trvanie",
         "track": "Skladba #",
         "path": "Cesta k súboru",

@@ -27,6 +27,7 @@ raw = {
         "title": "Judul",
         "artist": "Artis",
         "album": "Album",
+        "albumartist": "Album Artis",
         "duration": "Durasi",
         "track": "Track #",
         "path": "Path File",

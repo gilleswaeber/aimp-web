@@ -27,6 +27,7 @@ raw = {
         "title": "Naslov",
         "artist": "Izvajalec",
         "album": "Album",
+        "albumartist": "Izvajalec albuma",
         "duration": "Trajanje",
         "track": "Skladba #",
         "path": "Mesto datoteke",

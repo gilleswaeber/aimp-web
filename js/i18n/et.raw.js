@@ -27,6 +27,7 @@ raw = {
         "title": "Pealkiri",
         "artist": "Esitaja",
         "album": "Album",
+        "albumartist": "Albumi esitaja",
         "duration": "Kestvus",
         "track": "Loo №",
         "path": "Rada failini",

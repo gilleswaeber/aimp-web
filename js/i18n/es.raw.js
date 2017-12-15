@@ -27,6 +27,7 @@ raw = {
         "title": "Título",
         "artist": "Artista",
         "album": "Álbum",
+        "albumartist": "Grupo musical",
         "duration": "Duración",
         "track": "Pista N.º",
         "path": "Nombre de carpeta",

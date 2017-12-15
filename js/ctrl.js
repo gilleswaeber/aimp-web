@@ -194,7 +194,7 @@ function Ctrl(){
 	var itfIhm = {}, ctrl = {};
 	
 	var TRACK_FIELDS = ["channels","path","extension","filename","samplerate","arating","folder","creationdate","creationtime","disc","track","modificationdate","modificationtime"],
-		PLAYLIST_FIELDS = ["album","artist","bitrate","channels","path","extension","filename","genre","samplerate","duration","filesize","title","date","folder","id","creationdate","creationtime","disc","track","arating","rating","modificationdate","modificationtime"],
+		PLAYLIST_FIELDS = ["album","artist","bitrate","channels","path","extension","filename","genre","samplerate","duration","filesize","title","date","folder","id","creationdate","creationtime","disc","track","arating","rating","modificationdate","modificationtime","albumartist"],
 		QUEUE_FIELDS = PLAYLIST_FIELDS.slice(); QUEUE_FIELDS.push("playlist_id");
 	
 	/**

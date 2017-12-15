@@ -178,6 +178,7 @@ header{
 #controlbuttons{
 	padding:5px 0;
 	height:35px;
+	direction: ltr;
 }
 
 #controlbuttons > div{
@@ -192,10 +193,6 @@ header{
 }
 #controlbuttons div.active{
 	color: #484;
-}
-
-body.rtl #controlbuttons > div:not(#bvolume):not(#volume):not(#volumebar){
-	transform: scaleX(-1);
 }
 
 #controlbuttons #bplay{

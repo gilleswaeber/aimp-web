@@ -27,6 +27,7 @@ raw = {
         "title": "العنوان",
         "artist": "الفنان",
         "album": "الألبوم",
+        "albumartist": "فنان الألبوم",
         "duration": "المدة ",
         "track": "المقطوعة #",
         "path": "File Path",

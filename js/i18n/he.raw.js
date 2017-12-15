@@ -27,6 +27,7 @@ raw = {
         "title": "כותר",
         "artist": "אמן",
         "album": "אלבום",
+        "albumartist": "אמן האלבום",
         "duration": "אורך",
         "track": "# רצועה",
         "path": "נתיב קובץ",

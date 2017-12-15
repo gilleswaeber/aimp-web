@@ -134,7 +134,7 @@ Ihm.playlists = function(ihm){
 					playlists.show(playlists.tab);
 				});
 			});
-			["artist","album","folder"].forEach(function(v){
+			["artist","album","folder","albumartist"].forEach(function(v){
 				if(grouped.indexOf(v) > -1) return;
 				$("<span>").appendTo(group).text(ihm.i18n.playlists[v]()).click(function(){
 					grouped.push(v);

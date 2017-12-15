@@ -27,6 +27,7 @@ raw = {
         "title": "Otsikko",
         "artist": "Esittäjä",
         "album": "Albumi",
+        "albumartist": "Albumin esittäjä",
         "duration": "Kesto",
         "track": "Kappale #",
         "path": "Tiedostopolku",

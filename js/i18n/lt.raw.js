@@ -27,6 +27,7 @@ raw = {
         "title": "Pavadinimas",
         "artist": "Atlikėjas",
         "album": "Albumas",
+        "albumartist": "Albumo Artistai",
         "duration": "Trukmė",
         "track": "Takelio nr.",
         "path": "Failo kelias",

@@ -27,6 +27,7 @@ raw = {
         "title": "Nosaukums",
         "artist": "Izpildītājs",
         "album": "Albums",
+        "albumartist": "Albums izpildītājs",
         "duration": "Ilgums",
         "track": "Treks №",
         "path": "Faila atrašanās vieta",

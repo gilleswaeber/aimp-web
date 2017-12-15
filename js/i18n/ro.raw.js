@@ -27,6 +27,7 @@ raw = {
         "title": "Titlu",
         "artist": "Artist",
         "album": "Album",
+        "albumartist": "Artistul Albumului",
         "duration": "Durată",
         "track": "Piesa Nr.",
         "path": "Numele Dosarului",

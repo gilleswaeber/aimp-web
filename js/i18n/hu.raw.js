@@ -27,6 +27,7 @@ raw = {
         "title": "Cím",
         "artist": "Előadó",
         "album": "Album",
+        "albumartist": "Album előadó",
         "duration": "Időtartam",
         "track": "Track #",
         "path": "Fájl helye",

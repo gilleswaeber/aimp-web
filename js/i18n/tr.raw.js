@@ -27,6 +27,7 @@ raw = {
         "title": "Başlık",
         "artist": "Şanatçı",
         "album": "Albüm",
+        "albumartist": "Gurup",
         "duration": "Süre",
         "track": "Parça #",
         "path": "Dizin ismi",

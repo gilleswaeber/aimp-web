@@ -27,6 +27,7 @@ raw = {
         "title": "Skladba",
         "artist": "Interpret",
         "album": "Album",
+        "albumartist": "Sbor",
         "duration": "Délka",
         "track": "Stopa č.",
         "path": "Cesta k souboru",

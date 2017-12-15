@@ -27,6 +27,7 @@ raw = {
         "title": "Titel",
         "artist": "Künstler",
         "album": "Album",
+        "albumartist": "Album Artist",
         "duration": "Dauer",
         "track": "Track #",
         "path": "Dateipfad",
@@ -101,7 +102,7 @@ raw = {
         "pfullTreble": "Volle Höhen",
         "pheavyMetal": "Heavy-Metal",
         "pjazz": "Jazz",
-        "plive": "Leben",
+        "plive": "Live",
         "pparty": "Partei",
         "ppop": "Pop",
         "prap": "Rap",
@@ -114,8 +115,8 @@ raw = {
     "credits": {
         "dev": "Entwickelt und gestaltet von {dev}",
         "ressources": "Ressourcen",
-        "appUsing": "Diese app ist {what} von {who} verwenden.",
-        "aimp": "Diese app ist der AIMP Player und der AIMP-Control-Plugin erforderlich.",
+        "appUsing": "Diese app verwendet {what} von {who}.",
+        "aimp": "Diese app ist von der AIMP Player und der AIMP-Control-Plugin abhängig.",
         "translations": "Übersetzungen"
     },
     "errors": {

@@ -27,6 +27,7 @@ raw = {
         "title": "عنوان",
         "artist": "هنرمند",
         "album": "آلبوم",
+        "albumartist": "هنرمند آلبوم",
         "duration": "مدت زمان",
         "track": "تراک #",
         "path": "مسیر فایل",

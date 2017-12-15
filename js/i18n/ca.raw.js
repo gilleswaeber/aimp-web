@@ -27,6 +27,7 @@ raw = {
         "title": "Títol",
         "artist": "Intèrpret",
         "album": "Àlbum",
+        "albumartist": "Intèrpret d'àlbum",
         "duration": "Duració",
         "track": "Pista nº",
         "path": "Directori del fitxer",

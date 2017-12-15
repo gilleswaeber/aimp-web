@@ -27,6 +27,7 @@ raw = {
         "title": "タイトル",
         "artist": "アーティスト",
         "album": "アルバム",
+        "albumartist": "Album アルバム アーティスト",
         "duration": "再生時間",
         "track": "トラック №",
         "path": "ファイルパス",
